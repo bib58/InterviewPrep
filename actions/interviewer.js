@@ -212,7 +212,7 @@ export const requestWithdrawal = async ({
           reviewUrl,
         });
         await resend.emails.send({
-          from: "Prept <onboarding@resend.dev>",
+          from: "InterviewPrep<onboarding@resend.dev>",
           to: ADMIN_EMAIL,
           subject: `Withdrawal Request — ${dbUser.name} · ${credits} credits`,
           html,

@@ -48,6 +48,7 @@ export const getCallData = async (callId) => {
 
     return {
         token,
+        isInterviewer,
         currentUser: {
             id: user._id.toString(),
             name: user.firstName,

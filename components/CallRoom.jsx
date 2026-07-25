@@ -9,14 +9,12 @@ import { Loader2 } from "lucide-react";
 import CallUI from "./CallUI";
 import { useSelector } from "react-redux";
 
-export default function CallRoom({ callId, token, apiKey, currentUser, booking }) {
+export default function CallRoom({ callId, token, apiKey, currentUser, booking, isInterviewer }) {
   const router = useRouter();
   const [videoClient, setVideoClient] = useState(null);
   const [call, setCall] = useState(null);
   const clientRef = useRef(null);
   const joinedRef = useRef(false);
-
-  const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (joinedRef.current) return;
@@ -60,12 +58,12 @@ export default function CallRoom({ callId, token, apiKey, currentUser, booking }
   ]);
 
   const handleLeave = useCallback(() => {
-    if (user?.role === "user-interviewer") {
+    if (isInterviewer) {
       router.push("/dashboard/interviewer");
     } else {
       router.push(`/dashboard/interviewee?reviewBookingId=${booking.id}`);
     }
-  }, [user, router, booking]);
+  }, [isInterviewer, router, booking]);
 
   if (!videoClient || !call) {
     return (
@@ -81,7 +79,7 @@ export default function CallRoom({ callId, token, apiKey, currentUser, booking }
       <StreamCall call={call}>
         <CallUI
           callId={callId}
-          isInterviewer={user?.role === "user-interviewer"}
+          isInterviewer={isInterviewer}
           booking={booking}
           onLeave={handleLeave}
           apiKey={apiKey}

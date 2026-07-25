@@ -354,10 +354,6 @@ export default function LandingPage() {
               <GoldTitle>starts here</GoldTitle>
             </h2>
 
-            <p className="relative text-stone-400 font-light text-sm mb-11">
-              Join thousands of engineers already levelling up on Prept.
-            </p>
-
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/onboarding" className="relative">
                 <button className="w-full sm:w-auto px-8 py-3 bg-amber-400 text-amber-950 hover:bg-amber-500 rounded-xl font-semibold transition-colors">

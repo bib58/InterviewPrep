@@ -86,10 +86,17 @@ export async function POST(req) {
 
     // Send email to admin
     try {
+      if (!process.env.RESEND_API_KEY) {
+        throw new Error("RESEND_API_KEY is not defined in the environment variables. Please add it to your Vercel project settings.");
+      }
+      if (!process.env.ADMIN_MAIL) {
+        throw new Error("ADMIN_MAIL is not defined in the environment variables. Please add it to your Vercel project settings.");
+      }
+
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const adminEmail = process.env.ADMIN_MAIL
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL
-      const reviewUrl = `${appUrl}/payout/${payout._id}`;
+      const adminEmail = process.env.ADMIN_MAIL;
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+      const reviewUrl = `${appUrl.replace(/\/$/, '')}/payout/${payout._id}`;
 
       const html = WithdrawalRequestEmail({
         interviewerName: interviewer.firstName ?? "Interviewer",
@@ -103,14 +110,14 @@ export async function POST(req) {
       });
 
       await resend.emails.send({
-        from: "Prept <onboarding@resend.dev>",
+        from: "InterviewPrep<onboarding@resend.dev>",
         to: adminEmail,
         subject: `New Payout Request - ${interviewer.firstName} · ${creditNum} credits`,
         html,
       });
       console.log(`[payout-request] Admin notification email sent to ${adminEmail}`);
     } catch (emailErr) {
-      console.error("[payout-request] Failed to send email to admin:", emailErr);
+      console.error("[payout-request] Failed to send email to admin:", emailErr.message || emailErr);
     }
 
     return NextResponse.json({

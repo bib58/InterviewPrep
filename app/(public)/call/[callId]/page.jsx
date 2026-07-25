@@ -13,7 +13,7 @@ export default async function CallPage({ params }) {
     redirect("/");
   }
 
-  const { token, currentUser, booking } = result;
+  const { token, currentUser, booking, isInterviewer } = result;
 
   return (
     <CallRoom
@@ -22,6 +22,7 @@ export default async function CallPage({ params }) {
       apiKey={process.env.STREAM_API_KEY}
       currentUser={currentUser}
       booking={booking}
+      isInterviewer={isInterviewer}
     />
   );
 }

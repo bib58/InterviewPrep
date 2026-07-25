@@ -1,22 +1,51 @@
-join to be practice interview or take interviews and earn by registering your domainadn years of experience
-Book an one to one session with your seleted ineterviewee 
-after bookin one credit deducted will be transfered to the interveww balance which he can withdraw through his dedicated dashboard. the withdrawl request willbe sent to the admin
-Interviwerw can set their timing of availability which will be booked by the customer
-Real time chat screeen share and video calling features
-Interviweres also have acces to llm generated  questiona and answers in between the call
+# InterviewPrep — Mock Interview Platform
 
-Used stream for video conferencing and realtime chat
+InterviewPrep connects candidates with expert interviewers for live practice sessions, featuring real-time video, collaborative chat, and an LLM-question generator in the interviewer dashboard.
 
-**.lean()** in Mongoose (Summary)
-Without .lean() → Returns a Mongoose Document
-✅ Can use .save(), .validate(), document methods, etc.
-❌ Slightly slower and uses more memory.
-With .lean() → Returns a plain JavaScript object
-✅ Faster and more memory-efficient.
-✅ Best for read-only queries.
-❌ Cannot use .save() or other Mongoose document methods.
+---
 
+## ⚡ Core Features
 
-use **ngrok** to temporarily host your website
-ngrok http 3000
+*   **Custom Authentication:** JWT-based user session management backed by Redis.
+*   **Live Interview Rooms:** Real-time video conferencing, screen sharing, and messaging powered by Stream.
+*   **LLM Question Generator:** On-demand, role-specific questions and answers generated live during the call (powered by Google Gemini).
+*   **Credit Economy:** Credits are bought via Stripe Payment gateway. Credits are transferred to the interviewer only after they submit a detailed candidate evaluation report.
+*   **Payout Request System:** Interviewers can request credit withdrawals, notifying admins through mail via Resend. Admin will clear the payment as requested.
+*   **Feedback & Reviews:** Post-session recordings are available for candidates to watch, along with options to rate and review their interviewer.
+*   **Available Slots:** Interviewers can set their free time slots which in-turn will be booked by the candidates. Automated purging of expired availability slots from database.
 
+---
+
+## 🛠️ Tech Stack
+
+*   **Frontend & Backend:** Next.js (App Router), React 19, Redux Toolkit
+*   **Styling:** Tailwind CSS 4.0
+*   **Database** MongoDB, Redis
+*   **APIs & Integrations:** Stream SDK (WebRTC & Chat), Google Gemini, Stripe, Resend
+
+---
+
+## 🚀 Getting Started
+
+### 1. Configure Environment Variables
+```env
+MONGODB_URI="your_mongodb_uri"
+STREAM_API_KEY="your_stream_api_key"
+STREAM_API_SECRET="your_stream_api_secret"
+JWT_KEY="your_jwt_secret"
+REDIS_PASS="your_redis_password"
+GEMINI_API_KEY="your_gemini_api_key"
+STRIPE_KEY="your_stripe_key"
+STRIPE_SECRET_KEY="your_stripe_secret_key"
+STRIPE_WEBHOOK_SECRET="your_stripe_webhook_secret"
+RESEND_API_KEY="your_resend_api_key"
+ADMIN_MAIL="your_admin_email"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```
+
+### 2. Run the Application
+```bash
+npm install
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the application.
