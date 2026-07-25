@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import { Payout } from '@/lib/models/Payout';
-import Interviewer from '@/lib/models/Interviewer';
-import User from '@/lib/models/User';
+import dbConnect from '../../../../lib/db';
+import { Payout } from '../../../../lib/models/Payout';
+import Interviewer from '../../../../lib/models/Interviewer';
+import User from '../../../../lib/models/User';
 
 export async function GET(req, { params }) {
   try {
@@ -16,10 +16,8 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: 'Payout request not found' }, { status: 404 });
     }
 
-    // Try to find the interviewer details
     let interviewer = await Interviewer.findById(payout.interviewerId).lean();
     if (!interviewer) {
-      // Fallback to User collection if not found in Interviewer
       interviewer = await User.findById(payout.interviewerId).lean();
     }
 

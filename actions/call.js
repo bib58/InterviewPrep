@@ -28,7 +28,6 @@ export const getCallData = async (callId) => {
 
     if (!booking) return { error: "Call not found" };
 
-    // Ensure the authenticated user is either the interviewee or interviewer of this booking
     const isInterviewer = booking.interviewerId._id.toString() === user._id.toString();
     const isInterviewee = booking.intervieweeId._id.toString() === user._id.toString();
 

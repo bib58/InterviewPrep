@@ -1,9 +1,9 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import User from '@/lib/models/User';
-import Interviewer from '@/lib/models/Interviewer';
-import { CreditTransaction, TransactionType } from '@/lib/models/CreditTransaction';
+import dbConnect from '../../../../lib/db';
+import User from '../../../../lib/models/User';
+import Interviewer from '../../../../lib/models/Interviewer';
+import { CreditTransaction, TransactionType } from '../../../../lib/models/CreditTransaction';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -37,14 +37,12 @@ export async function POST(req) {
 
       await dbConnect();
 
-      // Check if already processed to prevent duplicate processing (idempotency)
       const existingTx = await CreditTransaction.findOne({ stripeSessionId: session.id });
       if (existingTx) {
         console.log(`Credits already processed for Stripe session: ${session.id}`);
         return NextResponse.json({ received: true, message: 'Already processed' });
       }
 
-      // Find if standard user or interviewer
       let targetUser = await User.findById(userId);
       if (targetUser) {
         targetUser.credits = (targetUser.credits || 0) + amount;
@@ -61,7 +59,6 @@ export async function POST(req) {
         }
       }
 
-      // Record credit purchase transaction
       await CreditTransaction.create({
         userId: userId,
         amount: amount,
@@ -74,7 +71,8 @@ export async function POST(req) {
     }
 
     return NextResponse.json({ received: true }, { status: 200 });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error handling Stripe webhook:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

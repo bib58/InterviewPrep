@@ -46,11 +46,24 @@ export async function GET() {
       reviewMap[r.bookingId.toString()] = r;
     });
 
-    const enrichedBookings = bookings.map(b => ({
-      ...b,
-      feedback: feedbackMap[b._id.toString()] || null,
-      review: reviewMap[b._id.toString()] || null,
-    }));
+    const enrichedBookings = bookings.map(b => {
+      let interviewee = null;
+      if (isInterviewer && b.intervieweeId && typeof b.intervieweeId === 'object') {
+        interviewee = {
+          _id: b.intervieweeId._id,
+          name: b.intervieweeId.firstName,
+          email: b.intervieweeId.emailId,
+          phoneNumber: b.intervieweeId.phoneNumber
+        };
+      }
+
+      return {
+        ...b,
+        interviewee,
+        feedback: feedbackMap[b._id.toString()] || null,
+        review: reviewMap[b._id.toString()] || null,
+      };
+    });
 
     return NextResponse.json({ bookings: enrichedBookings }, { status: 200 });
   } catch (err) {

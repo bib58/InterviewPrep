@@ -25,7 +25,7 @@ export default function PayoutReviewPage({ params }) {
         setLoading(true);
         const res = await fetch(`/api/payouts/${id}`);
         const data = await res.json();
-        
+
         if (!res.ok) {
           throw new Error(data.error || "Failed to load payout details");
         }
@@ -80,7 +80,7 @@ export default function PayoutReviewPage({ params }) {
     return (
       <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center text-stone-200">
         <Loader2 className="w-10 h-10 text-amber-500 animate-spin mb-4" />
-        <p className="text-sm text-stone-400">Loading payout details...</p>
+        <p className="text-md text-stone-400">Loading payout details...</p>
       </div>
     );
   }
@@ -106,8 +106,6 @@ export default function PayoutReviewPage({ params }) {
   return (
     <div className="min-h-screen bg-[#09090b] text-stone-200 py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-amber-400/30 selection:text-amber-200">
       <div className="max-w-3xl mx-auto space-y-8 mt-8">
-        
-        {/* Navigation & Header */}
         <div className="flex items-center justify-between">
           <button
             onClick={() => router.push('/')}
@@ -118,8 +116,6 @@ export default function PayoutReviewPage({ params }) {
           </button>
           <span className="text-xs text-stone-500 font-mono">ID: {payout?._id}</span>
         </div>
-
-        {/* Title */}
         <div className="border-b border-white/5 pb-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight flex items-center gap-3">
             <CreditCard className="w-8 h-8 text-amber-500" />
@@ -130,10 +126,9 @@ export default function PayoutReviewPage({ params }) {
           </p>
         </div>
 
-        {/* Details Card */}
         <div className="bg-[#141418] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
-          
+
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-6">
             <div>
               <span className="text-[10px] text-stone-500 uppercase tracking-widest block font-bold">Net Payout Amount</span>
@@ -141,7 +136,7 @@ export default function PayoutReviewPage({ params }) {
                 ${Number(payout?.netAmount || 0).toFixed(2)}
               </span>
             </div>
-            
+
             {payout?.status === "COMPLETED" ? (
               <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -156,10 +151,9 @@ export default function PayoutReviewPage({ params }) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Payout Details */}
             <div className="space-y-4">
               <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider">Transaction Info</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-stone-400">Credits Requested</span>
@@ -173,8 +167,7 @@ export default function PayoutReviewPage({ params }) {
                   <span className="text-stone-400">Payment Method</span>
                   <span className="font-semibold text-white">{payout?.paymentMethod}</span>
                 </div>
-                
-                {/* UPI Detail Display with Copy */}
+
                 <div className="bg-stone-900/50 border border-white/5 rounded-xl p-3 mt-4 space-y-1.5">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] text-stone-500 uppercase tracking-wider font-bold">UPI ID</span>
@@ -200,10 +193,9 @@ export default function PayoutReviewPage({ params }) {
               </div>
             </div>
 
-            {/* Interviewer Details */}
             <div className="space-y-4">
               <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider">Interviewer Profile</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-stone-400">Name</span>
@@ -237,7 +229,6 @@ export default function PayoutReviewPage({ params }) {
             </div>
           </div>
 
-          {/* Action Button */}
           <div className="border-t border-white/5 pt-6 mt-8">
             {payout?.status === "PROCESSING" ? (
               <button
@@ -264,9 +255,7 @@ export default function PayoutReviewPage({ params }) {
               </div>
             )}
           </div>
-
         </div>
-
       </div>
     </div>
   );

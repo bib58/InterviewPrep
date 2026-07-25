@@ -56,4 +56,3 @@ export function WithdrawalRequestEmail({
     </html>
   `;
 }
-

@@ -1,31 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import {
-  Calendar,
-  Clock,
-  Sparkles,
-  CreditCard,
-  Plus,
-  Video,
-  CheckCircle2,
-  AlertCircle,
-  MessageSquare,
-  Award,
-  ChevronRight,
-  TrendingUp,
-  User,
-  Building2,
-  FileText,
-  Camera,
-  Star,
-  X,
-  ArrowRight,
-  RefreshCw,
-  ExternalLink,
-  ShieldCheck,
-  Zap
-} from "lucide-react";
+import { Calendar, Clock, Sparkles, CreditCard, Plus, Video, CheckCircle2, AlertCircle, MessageSquare, Award, TrendingUp, User, FileText, Camera, Star, X, ArrowRight, RefreshCw, ExternalLink, Zap } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -37,7 +13,7 @@ function IntervieweeDashboardContent() {
   const paymentSuccess = searchParams?.get("success");
   const paymentCancelled = searchParams?.get("cancelled");
   const sessionId = searchParams?.get("session_id");
-  const [activeTab, setActiveTab] = useState("sessions"); // 'sessions', 'feedback', 'credits'
+  const [activeTab, setActiveTab] = useState("sessions");
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [credits, setCredits] = useState(0);
@@ -45,13 +21,11 @@ function IntervieweeDashboardContent() {
   const [transactions, setTransactions] = useState([]);
   const [interviewers, setInterviewers] = useState([]);
 
-  // Modals
   const [isBuyCreditsOpen, setIsBuyCreditsOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [isSubmittingBuy, setIsSubmittingBuy] = useState(false);
   const [isSubmittingBook, setIsSubmittingBook] = useState(false);
 
-  // Booking Form State
   const [bookingForm, setBookingForm] = useState({
     interviewerId: "",
     topic: "Full Stack Mock Interview",
@@ -101,18 +75,15 @@ function IntervieweeDashboardContent() {
     }
   };
 
-  // Load User Data, Bookings, Credits & Interviewers
   const loadData = async () => {
     setIsLoading(true);
     try {
-      // 1. Fetch Auth user
       const userRes = await fetch("/api/user/check");
       if (userRes.ok) {
         const userData = await userRes.json();
         setUser(userData.user);
       }
 
-      // 2. Fetch Credits
       const creditsRes = await fetch("/api/user/credits");
       if (creditsRes.ok) {
         const credData = await creditsRes.json();
@@ -120,14 +91,12 @@ function IntervieweeDashboardContent() {
         setTransactions(credData.transactions || []);
       }
 
-      // 3. Fetch Bookings
       const bookingsRes = await fetch("/api/bookings");
       if (bookingsRes.ok) {
         const bookData = await bookingsRes.json();
         setBookings(bookData.bookings || []);
       }
 
-      // 4. Fetch Interviewers list for booking
       const interviewersRes = await fetch("/api/interviewers");
       if (interviewersRes.ok) {
         const intData = await interviewersRes.json();
@@ -157,7 +126,6 @@ function IntervieweeDashboardContent() {
       if (targetBooking) {
         setSelectedBookingForReview(targetBooking);
         setIsReviewModalOpen(true);
-        // Clear search parameter from URL so it doesn't pop up again
         const newUrl = window.location.pathname;
         window.history.replaceState({}, "", newUrl);
       }
@@ -204,7 +172,6 @@ function IntervieweeDashboardContent() {
     verifyPayment();
   }, [paymentSuccess, paymentCancelled, sessionId]);
 
-  // Top Up Credits Handler
   const handleBuyCredits = async (amount) => {
     setIsSubmittingBuy(true);
     try {
@@ -230,47 +197,6 @@ function IntervieweeDashboardContent() {
     }
   };
 
-  const handleBookInterview = async (e) => {
-    e.preventDefault();
-    if (credits < 1) {
-      toast.error("You need at least 1 credit to book a session. Please purchase credits.");
-      setIsBuyCreditsOpen(true);
-      return;
-    }
-
-    if (!bookingForm.interviewerId || !bookingForm.date || !bookingForm.time) {
-      toast.error("Please fill in all booking details.");
-      return;
-    }
-
-    setIsSubmittingBook(true);
-    try {
-      const startDateTime = new Date(`${bookingForm.date}T${bookingForm.time}`);
-      const endDateTime = new Date(startDateTime.getTime() + 45 * 60 * 1000); // 45 min duration
-
-      const res = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          interviewerId: bookingForm.interviewerId,
-          startTime: startDateTime.toISOString(),
-          endTime: endDateTime.toISOString(),
-          topic: bookingForm.topic,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Booking failed");
-
-      toast.success("Interview call booked successfully!");
-      loadData();
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setIsSubmittingBook(false);
-    }
-  };
-
   const upcomingSessions = bookings.filter((b) => {
     const isScheduled = b.status === "SCHEDULED";
     const isFuture = new Date(b.endTime).getTime() > Date.now();
@@ -286,22 +212,12 @@ function IntervieweeDashboardContent() {
   const feedbacksReceived = bookings.filter((b) => b.feedback);
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-stone-200 py-8 px-4 sm:px-6 lg:px-12 font-sans selection:bg-amber-400/30 selection:text-amber-200 mt-12">
+    <div className="min-h-screen bg-[#09090b] text-stone-200 py-8 px-4 sm:px-6 lg:px-12 font-sans selection:bg-amber-400/30 selection:text-amber-200 mt-14">
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
-
         <div className="relative overflow-hidden bg-gradient-to-r from-[#17171c] via-[#1c1c23] to-[#141418] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
           <div className="absolute top-0 right-0 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
-          
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
-                  <Zap size={13} className="fill-amber-400" /> Candidate Dashboard
-                </span>
-                <span className="text-stone-500 text-xs font-medium">
-                  Welcome back
-                </span>
-              </div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
                 {user ? user.firstName || "Candidate" : "Candidate Dashboard"}
               </h1>
@@ -313,125 +229,109 @@ function IntervieweeDashboardContent() {
             <div className="flex flex-wrap items-center gap-3 shrink-0">
               <button
                 onClick={() => setIsBuyCreditsOpen(true)}
-                className="bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold px-5 py-3 rounded-xl transition-all shadow-lg shadow-amber-400/20 flex items-center gap-2 text-sm"
+                className="bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-amber-400/20 flex items-center gap-2 text-md cursor-pointer"
               >
                 <Plus size={18} /> Get More Credits
               </button>
-              <button onClick={()=>{router.push('/browseinterviewers')}}
-                className="bg-stone-800 hover:bg-stone-700 text-stone-100 font-semibold px-5 py-3 rounded-xl transition-all border border-white/10 flex items-center gap-2 text-sm"
+              <button onClick={() => { router.push('/browseinterviewers') }}
+                className="bg-stone-800 hover:bg-stone-700 text-stone-100 font-semibold px-4 py-2.5 rounded-xl transition-all border border-white/10 flex items-center gap-2 text-md cursor-pointer"
               >
                 <Calendar size={18} className="text-amber-400" /> Book Interview Call
               </button>
             </div>
           </div>
 
-          {/* Key Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-8 border-t border-white/10 relative z-10">
-            
-            {/* Credit Balance */}
             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-stone-400 text-xs font-medium mb-1">
+              <div className="flex items-center justify-between text-stone-400 text-sm font-medium mb-1">
                 <span>Available Credits</span>
                 <Sparkles size={16} className="text-amber-400" />
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-amber-400">{credits}</span>
-                <span className="text-xs text-stone-400">credits</span>
+                <span className="text-sm text-stone-400">credits</span>
               </div>
             </div>
 
-            {/* Upcoming Sessions */}
             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-stone-400 text-xs font-medium mb-1">
+              <div className="flex items-center justify-between text-stone-400 text-sm font-medium mb-1">
                 <span>Upcoming Calls</span>
                 <Clock size={16} className="text-blue-400" />
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-white">{upcomingSessions.length}</span>
-                <span className="text-xs text-stone-400">scheduled</span>
+                <span className="text-sm text-stone-400">scheduled</span>
               </div>
             </div>
 
-            {/* Completed Sessions */}
             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-stone-400 text-xs font-medium mb-1">
+              <div className="flex items-center justify-between text-stone-400 text-sm font-medium mb-1">
                 <span>Completed Sessions</span>
                 <CheckCircle2 size={16} className="text-emerald-400" />
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-white">{completedSessions.length}</span>
-                <span className="text-xs text-stone-400">interviews</span>
+                <span className="text-sm text-stone-400">interviews</span>
               </div>
             </div>
 
-            {/* Feedbacks Received */}
             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-stone-400 text-xs font-medium mb-1">
+              <div className="flex items-center justify-between text-stone-400 text-sm font-medium mb-1">
                 <span>Feedbacks Received</span>
                 <MessageSquare size={16} className="text-purple-400" />
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-white">{feedbacksReceived.length}</span>
-                <span className="text-xs text-stone-400">reviews</span>
+                <span className="text-sm text-stone-400">reviews</span>
               </div>
             </div>
-
           </div>
         </div>
 
-        {/* ─── MAIN TABS & CONTENT ────────────────────────────────────────────── */}
         <div className="flex flex-col gap-6">
-
-          {/* Navigation Bar */}
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setActiveTab("sessions")}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "sessions"
-                    ? "bg-amber-400 text-amber-950 font-semibold shadow-md shadow-amber-400/10"
-                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
-                }`}
+                className={`px-4 py-2.5 rounded-xl text-md font-medium transition-all flex items-center gap-2 shrink-0 ${activeTab === "sessions"
+                  ? "bg-amber-400 text-amber-950 font-semibold shadow-md shadow-amber-400/10"
+                  : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                  }`}
               >
                 <Calendar size={16} /> My Sessions ({bookings.length})
               </button>
+              {/* 
               <button
                 onClick={() => setActiveTab("feedback")}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "feedback"
-                    ? "bg-amber-400 text-amber-950 font-semibold shadow-md shadow-amber-400/10"
-                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
-                }`}
+                className={`px-4 py-2.5 rounded-xl text-md font-medium transition-all flex items-center gap-2 shrink-0 ${activeTab === "feedback"
+                  ? "bg-amber-400 text-amber-950 font-semibold shadow-md shadow-amber-400/10"
+                  : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                  }`}
               >
                 <Award size={16} /> Performance Feedback ({feedbacksReceived.length})
               </button>
+               */}
               <button
                 onClick={() => setActiveTab("credits")}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "credits"
-                    ? "bg-amber-400 text-amber-950 font-semibold shadow-md shadow-amber-400/10"
-                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
-                }`}
+                className={`px-4 py-2.5 rounded-xl text-md font-medium transition-all flex items-center gap-2 shrink-0 ${activeTab === "credits"
+                  ? "bg-amber-400 text-amber-950 font-semibold shadow-md shadow-amber-400/10"
+                  : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                  }`}
               >
                 <CreditCard size={16} /> Credit History ({transactions.length})
               </button>
             </div>
 
-            <button
-              onClick={loadData}
-              disabled={isLoading}
-              className="p-2 text-stone-400 hover:text-stone-200 hover:bg-white/5 rounded-lg transition-colors"
-              title="Refresh Data"
+            <button onClick={loadData} disabled={isLoading} className="p-3 bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-50"
+              title="Refresh Dashboard"
             >
-              <RefreshCw size={16} className={isLoading ? "animate-spin text-amber-400" : ""} />
+              <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-indigo-400" : "group-hover:rotate-180 transition-transform duration-500"}`} />
+              <span className="text-sm font-medium hidden sm:inline">Refresh</span>
             </button>
           </div>
 
-          {/* TAB 1: SESSIONS (UPCOMING & COMPLETED) */}
           {activeTab === "sessions" && (
             <div className="flex flex-col gap-6">
-
-              {/* Upcoming Section */}
               <div>
                 <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <Clock size={18} className="text-amber-400" /> Upcoming Interview Calls
@@ -439,8 +339,8 @@ function IntervieweeDashboardContent() {
                 {upcomingSessions.length === 0 ? (
                   <div className="bg-[#141418] border border-white/5 rounded-2xl p-8 text-center flex flex-col items-center justify-center gap-3">
                     <Calendar size={36} className="text-stone-600" />
-                    <p className="text-stone-400 text-sm">You have no upcoming interview calls scheduled.</p>
-                    
+                    <p className="text-stone-400 text-md">You have no upcoming interview calls scheduled.</p>
+
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -536,13 +436,13 @@ function IntervieweeDashboardContent() {
                                 PAST / EXPIRED
                               </span>
                             )}
-                            <span className="text-[10px] text-stone-400">
+                            <span className="text-sm text-stone-400">
                               {new Date(item.startTime).toLocaleDateString()}
                             </span>
                           </div>
 
                           <h3 className="text-base font-bold text-white mb-1 truncate" title={item.topic || "Mock Interview"}>{item.topic || "Mock Interview"}</h3>
-                          <p className="text-[11px] text-stone-400 flex items-center gap-1.5 mb-3">
+                          <p className="text-md text-stone-400 flex items-center gap-1.5 mb-3">
                             <User size={12} className="text-amber-400" /> Interviewer:{" "}
                             <span className="text-stone-200 font-medium truncate" title={item.interviewerId?.firstName || "Interviewer"}>
                               {item.interviewerId?.firstName || "Interviewer"}
@@ -552,19 +452,19 @@ function IntervieweeDashboardContent() {
                           {item.feedback ? (
                             <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-2.5 mb-2">
                               <div className="flex items-center justify-between mb-1.5">
-                                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
-                                  <Star size={11} className="fill-amber-400" /> Rating: {item.feedback.overallRating || "GOOD"}
+                                <span className="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                                  <Star size={12} className="fill-amber-400" /> Rating: {item.feedback.overallRating || "GOOD"}
                                 </span>
-                                <span className="text-[10px] font-medium text-stone-300">
-                                  Score: {item.feedback.score || 8}/10
+                                <span className="text-sm font-medium text-stone-300">
+                                  Score: {item.feedback.score}/10
                                 </span>
                               </div>
-                              <p className="text-[11px] text-stone-300 line-clamp-2">
+                              <p className="text-xs text-stone-300 line-clamp-2">
                                 {item.feedback.summary || "Great interview session with solid communication."}
                               </p>
                             </div>
                           ) : (
-                            <div className="bg-stone-800/50 border border-stone-700/50 rounded-xl p-2 text-[11px] text-stone-400 flex items-center gap-1.5 mb-2">
+                            <div className="bg-stone-800/50 border border-stone-700/50 rounded-xl p-2 text-sm text-stone-400 flex items-center gap-1.5 mb-2">
                               <AlertCircle size={12} className="text-amber-400 shrink-0" />
                               Feedback pending from interviewer.
                             </div>
@@ -572,36 +472,34 @@ function IntervieweeDashboardContent() {
                         </div>
 
                         <div className="flex flex-col gap-1.5 mt-1.5">
-                          {/* Watch Recording Button */}
                           {item.recordingUrl ? (
                             <a href={item.recordingUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all border border-white/10"
+                              className="w-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold py-2 px-4 rounded-xl text-sm  flex items-center justify-center gap-1.5 transition-all border border-white/10"
                             >
                               <Camera size={14} className="text-amber-400" /> Watch Recording
                             </a>
                           ) : (
                             <button
                               onClick={() => toast.info("Recording is being processed or was not enabled for this session.")}
-                              className="w-full bg-stone-900/50 text-stone-500 font-medium py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-white/5 cursor-pointer hover:bg-stone-900 transition-all"
+                              className="w-full bg-stone-900/50 text-stone-500 font-medium py-2 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 border border-white/5 cursor-pointer hover:bg-stone-900 transition-all"
                             >
                               <Camera size={14} /> Watch Recording (Pending/Unavailable)
                             </button>
                           )}
 
-                          {/* Read Feedback & Improvements Button */}
                           {item.feedback ? (
                             <button
                               onClick={() => setSelectedFeedback(item.feedback)}
-                              className="w-full bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
+                              className="w-full bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold py-2 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 transition-all mt-1"
                             >
                               <FileText size={14} className="fill-amber-950 text-amber-950" /> Read Feedback & Improvements
                             </button>
                           ) : (
                             <button
                               onClick={() => toast.info("Feedback is pending from the interviewer. Once submitted, you can view your areas for improvement here.")}
-                              className="w-full bg-stone-800/80 text-stone-400 font-semibold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all border border-white/5 cursor-pointer hover:bg-stone-800"
+                              className="w-full bg-stone-800/80 text-stone-400 mt-1 font-semibold py-2 px-4 rounded-xl text-sm flex items-center justify-center gap-1.5 transition-all border border-white/5 cursor-pointer hover:bg-stone-800"
                             >
                               <FileText size={14} /> Read Feedback & Improvements (Pending)
                             </button>
@@ -612,11 +510,10 @@ function IntervieweeDashboardContent() {
                   </div>
                 )}
               </div>
-
             </div>
           )}
 
-          {activeTab === "feedback" && (
+          {/* {activeTab === "feedback" && (
             <div className="flex flex-col gap-6">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <Award size={18} className="text-purple-400" /> Interviewer Feedback Reviews
@@ -654,7 +551,7 @@ function IntervieweeDashboardContent() {
                           </div>
                         </div>
 
-                        {/* Breakdown Grid */}
+
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           <div className="bg-white/5 p-4 rounded-xl border border-white/5">
                             <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">Technical Skills</h4>
@@ -670,7 +567,7 @@ function IntervieweeDashboardContent() {
                           </div>
                         </div>
 
-                        {/* Strengths & Improvements */}
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="bg-emerald-950/20 border border-emerald-500/20 p-4 rounded-xl">
                             <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
@@ -695,7 +592,7 @@ function IntervieweeDashboardContent() {
                           </div>
                         </div>
 
-                        {/* Summary & Recommendation */}
+
                         <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col gap-2">
                           <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider">Interviewer Recommendation & Summary</h4>
                           <p className="text-xs text-stone-300 leading-relaxed">{fb.summary}</p>
@@ -711,25 +608,18 @@ function IntervieweeDashboardContent() {
                 </div>
               )}
             </div>
-          )}
+          )} */}
 
-          {/* TAB 3: CREDIT HISTORY LOG */}
           {activeTab === "credits" && (
             <div className="flex flex-col gap-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <CreditCard size={18} className="text-amber-400" /> Credit Balance & Transactions
                 </h2>
-                <button
-                  onClick={() => setIsBuyCreditsOpen(true)}
-                  className="bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all"
-                >
-                  <Plus size={14} /> Add Credits
-                </button>
               </div>
 
               {transactions.length === 0 ? (
-                <div className="bg-[#141418] border border-white/5 rounded-2xl p-8 text-center text-stone-400 text-sm">
+                <div className="bg-[#141418] border border-white/5 rounded-2xl p-8 text-center text-stone-400 text-md">
                   No credit transactions logged yet. Starting credits (5) were allocated upon registration.
                 </div>
               ) : (
@@ -738,15 +628,16 @@ function IntervieweeDashboardContent() {
                     {transactions.map((tx) => (
                       <div key={tx._id} className="p-4 flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3">
-                          <div className={`w-9 h-9 rounded-full flex items-center justify-center ${
-                            tx.amount > 0 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                          }`}>
+                          <div className={`w-9 h-9 rounded-full flex items-center justify-center ${tx.amount > 0 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                            }`}>
                             <CreditCard size={16} />
                           </div>
+
                           <div>
                             <p className="font-semibold text-white">
                               {tx.type === "CREDIT_PURCHASE" ? "Credit Top-Up / Purchase" : tx.type === "BOOKING_DEDUCTION" ? "Interview Session Charge" : tx.type === "WELCOME_BONUS" ? "Welcome Bonus" : tx.type}
                             </p>
+
                             <p className="text-xs text-stone-400">
                               {new Date(tx.createdAt).toLocaleString()}
                             </p>
@@ -763,12 +654,9 @@ function IntervieweeDashboardContent() {
               )}
             </div>
           )}
-
         </div>
-
       </div>
 
-      {/* ─── MODAL 1: BUY CREDITS ─────────────────────────────────────────────── */}
       {isBuyCreditsOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#151519] border border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
@@ -785,7 +673,7 @@ function IntervieweeDashboardContent() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white">Get More Credits</h3>
-                <p className="text-xs text-stone-400">1 Credit = 1 Mock Interview Session</p>
+                <p className="text-sm text-stone-400">1 Credit = 1 Mock Interview Session</p>
               </div>
             </div>
 
@@ -835,15 +723,10 @@ function IntervieweeDashboardContent() {
                 </div>
               </div>
             </div>
-
-            <p className="text-xs text-stone-500 text-center">
-              Credits do not expire. 1 credit is deducted when your interview call ends.
-            </p>
           </div>
         </div>
       )}
 
-      {/* ─── MODAL 3: VIEW DETAILED FEEDBACK ──────────────────────────────────── */}
       {selectedFeedback && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#151519] border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full relative shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
@@ -919,7 +802,6 @@ function IntervieweeDashboardContent() {
         </div>
       )}
 
-      {/* ─── MODAL 4: WRITE A REVIEW ────────────────────────────────────────── */}
       {isReviewModalOpen && selectedBookingForReview && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#151519] border border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
