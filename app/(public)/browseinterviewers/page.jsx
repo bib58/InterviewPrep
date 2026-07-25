@@ -13,7 +13,6 @@ export default function BrowseInterviewersPage() {
         const response = await fetch('/api/interviewers');
         if (response.ok) {
           const data = await response.json();
-          // Normalize data slightly to ensure name exists if only firstName/lastName are provided
           const mapped = (data.interviewers || []).map(i => ({
             ...i,
             id: i._id?.toString(),
@@ -29,10 +28,10 @@ export default function BrowseInterviewersPage() {
         setLoading(false);
       }
     };
-
+    
     fetchInterviewers();
   }, []);
-  
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#09090b] flex justify-center items-center">
@@ -40,9 +39,8 @@ export default function BrowseInterviewersPage() {
       </div>
     );
   }
-  
   return (
-    <div className="min-h-screen bg-[#09090b] py-16 px-4 sm:px-6 lg:px-8 font-sans selection:bg-amber-400/30 selection:text-amber-200 mt-4">
+    <div className="min-h-screen bg-[#09090b] py-16 px-4 sm:px-6 lg:px-8 font-sans selection:bg-amber-400/30 selection:text-amber-200 mt-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12 max-w-2xl">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">

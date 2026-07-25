@@ -66,11 +66,9 @@ export default function ProfilePage() {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center px-4 py-10">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center px-4 py-10 mt-12">
             <div className="w-full max-w-2xl">
                 <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl overflow-hidden relative">
-
-                    {/* Header Background */}
                     <div className="h-32 bg-white/5 relative">
                         <div className="absolute -bottom-12 left-8">
                             <div className="w-24 h-24 rounded-full">
@@ -105,7 +103,7 @@ export default function ProfilePage() {
 
                     <div className="pt-16 px-8 pb-8">
                         <h1 className="text-3xl font-bold text-white mb-1">{user.firstName}</h1>
-                        <p className="text-white/70 mb-8 capitalize">{user.role?.replace('-', ' ')}</p>
+                        <p className="text-white/70 mb-6 text-lg capitalize">{user.role?.replace(/user[- ]?/i, '').replace('-', ' ')}</p>
 
                         {error && (
                             <div className="mb-6 p-4 rounded-xl bg-red-500/20 border border-red-400 text-red-200">
@@ -119,9 +117,9 @@ export default function ProfilePage() {
                         )}
 
                         <div className="space-y-6">
-                            {/* First Name - Editable */}
+
                             <div className="group">
-                                <label className="flex items-center gap-2 text-white/80 text-sm mb-2 font-medium">
+                                <label className="flex items-center gap-2 text-white/80 text-md mb-2 font-medium">
                                     <User className="w-4 h-4" /> First Name
                                 </label>
                                 <input
@@ -129,61 +127,61 @@ export default function ProfilePage() {
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
                                     disabled={!isEditing}
-                                    className={`w-full rounded-xl px-5 py-3 text-white transition-all ${isEditing
-                                            ? "bg-white/20 border border-white/40 focus:ring-2 focus:ring-yellow-400 outline-none"
-                                            : "bg-white/5 border border-white/10 cursor-not-allowed opacity-80"
+                                    className={`w-full rounded-xl px-5 py-3 text-white text-lg transition-all ${isEditing
+                                        ? "bg-white/20 border border-white/40 focus:ring-2 focus:ring-yellow-400 outline-none"
+                                        : "bg-white/5 border border-white/10 cursor-not-allowed opacity-80"
                                         }`}
                                 />
                             </div>
 
-                            {/* Email - Read Only */}
+
                             <div className="group">
-                                <label className="flex items-center gap-2 text-white/80 text-sm mb-2 font-medium">
+                                <label className="flex items-center gap-2 text-white/80 text-md mb-2 font-medium">
                                     <Mail className="w-4 h-4" /> Email Address
                                 </label>
                                 <input
                                     type="email"
                                     value={user.emailId}
                                     disabled
-                                    className="w-full rounded-xl px-5 py-3 text-white bg-white/5 border border-white/10 cursor-not-allowed opacity-70"
+                                    className="w-full text-lg rounded-xl px-5 py-3 text-white bg-white/5 border border-white/10 cursor-not-allowed opacity-70"
                                 />
-                                <p className="text-xs text-white/50 mt-1">Email cannot be changed.</p>
+                                <p className="text-sm text-white/50 mt-1">Email cannot be changed.</p>
                             </div>
 
-                            {/* Phone Number - Read Only */}
+
                             <div className="group">
-                                <label className="flex items-center gap-2 text-white/80 text-sm mb-2 font-medium">
+                                <label className="flex items-center gap-2 text-white/80 text-md mb-2 font-medium">
                                     <Phone className="w-4 h-4" /> Phone Number
                                 </label>
                                 <input
                                     type="tel"
                                     value={user.phoneNumber || 'Not provided'}
                                     disabled
-                                    className="w-full rounded-xl px-5 py-3 text-white bg-white/5 border border-white/10 cursor-not-allowed opacity-70"
+                                    className="w-full rounded-xl px-5 text-lg py-3 text-white bg-white/5 border border-white/10 cursor-not-allowed opacity-70"
                                 />
-                                <p className="text-xs text-white/50 mt-1">Phone number cannot be changed.</p>
+                                <p className="text-sm text-white/50 mt-1">Phone number cannot be changed.</p>
                             </div>
 
-                            {/* Role - Read Only */}
+
                             <div className="group">
-                                <label className="flex items-center gap-2 text-white/80 text-sm mb-2 font-medium">
+                                <label className="flex items-center gap-2 text-white/80 text-md mb-2 font-medium">
                                     <Briefcase className="w-4 h-4" /> Account Role
                                 </label>
                                 <input
                                     type="text"
-                                    value={user.role || 'user'}
+                                    value={user.role}
                                     disabled
-                                    className="w-full rounded-xl px-5 py-3 text-white bg-white/5 border border-white/10 cursor-not-allowed opacity-70 capitalize"
+                                    className="w-full rounded-xl px-5 text-lg py-3 text-white bg-white/5 border border-white/10 cursor-not-allowed opacity-70 capitalize"
                                 />
                             </div>
                         </div>
 
-                        {/* Actions */}
+
                         <div className="mt-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-4 justify-between">
                             <button
                                 onClick={handleLogout}
                                 disabled={loading}
-                                className="flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all disabled:opacity-50"
+                                className="flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all disabled:opacity-50 cursor-pointer"
                             >
                                 <LogOut className="w-4 h-4" />
                                 Logout
@@ -191,7 +189,7 @@ export default function ProfilePage() {
                             <button
                                 onClick={handleDeleteAccount}
                                 disabled={loading}
-                                className="flex items-center justify-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500/40 border border-red-500/50 text-red-200 font-medium rounded-xl transition-all disabled:opacity-50"
+                                className="flex items-center justify-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-500/40 border border-red-500/50 text-black font-medium rounded-xl cursor-pointer transition-all disabled:opacity-50"
                             >
                                 <Trash2 className="w-4 h-4" />
                                 Delete Account

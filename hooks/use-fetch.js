@@ -20,6 +20,5 @@ export default function useFetch(cb) {
       setLoading(false);
     }
   };
-
   return { data, loading, error, fn };
 }

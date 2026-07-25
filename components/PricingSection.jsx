@@ -44,26 +44,20 @@ export default function PricingSection() {
 
   return (
     <div className="space-y-8">
-      {/* Header Info */}
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold tracking-tight text-white">
           Get More Credits
         </h2>
-        <p className="text-sm text-stone-400">
-          1 Credit = 1 Mock Interview Session
-        </p>
       </div>
 
-      {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {PLANS.map((plan) => (
           <div
             key={plan.name}
-            className={`relative rounded-2xl p-8 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 ${
-              plan.featured
+            className={`relative rounded-2xl p-8 h-full flex flex-col transition-all duration-300 hover:-translate-y-1 ${plan.featured
                 ? "bg-[#141417] border border-amber-400/40 shadow-lg shadow-amber-500/5"
                 : "bg-[#0f0f11] border border-white/10 hover:border-amber-400/20"
-            }`}
+              }`}
           >
             {/* Badge (e.g. POPULAR) */}
             {plan.badge && (
@@ -88,11 +82,10 @@ export default function PricingSection() {
 
             <div className="flex items-baseline gap-1 my-4">
               <span
-                className={`font-serif text-5xl leading-none tracking-tight ${
-                  plan.featured
+                className={`font-serif text-5xl leading-none tracking-tight ${plan.featured
                     ? "bg-linear-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent"
                     : "bg-linear-to-br from-stone-100 to-stone-400 bg-clip-text text-transparent"
-                }`}
+                  }`}
               >
                 {plan.price}
               </span>
@@ -119,11 +112,10 @@ export default function PricingSection() {
             <button
               onClick={() => handlePlanClick(plan)}
               disabled={loadingPlan !== null}
-              className={`w-full py-2.5 rounded-lg font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
-                plan.featured
+              className={`w-full py-2.5 rounded-lg font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${plan.featured
                   ? "bg-amber-400 text-amber-950 hover:bg-amber-500 font-semibold"
                   : "bg-white/5 border border-white/10 text-white hover:bg-white/10"
-              }`}
+                }`}
             >
               {loadingPlan === plan.planId ? "Processing..." : `Buy ${plan.name}`}
             </button>
@@ -131,8 +123,7 @@ export default function PricingSection() {
         ))}
       </div>
 
-      {/* Expiration and deduction notice */}
-      <p className="text-center text-xs text-stone-500 max-w-lg mx-auto leading-relaxed">
+      <p className="text-center text-md text-stone-500 max-w-lg mx-auto leading-relaxed">
         Credits do not expire. 1 credit is deducted when your interview call ends.
       </p>
     </div>

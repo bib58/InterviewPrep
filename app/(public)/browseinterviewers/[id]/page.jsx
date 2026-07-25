@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Building2, Clock, Mail, ChevronLeft, Calendar, ArrowRight, X, Sparkles, CheckCircle, AlertCircle, Star } from "lucide-react";
+import { Building2, Clock, ChevronLeft, Calendar, ArrowRight, X, Sparkles, AlertCircle, Star } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { GravityStarsBackground } from "@/components/animate-ui/components/backgrounds/gravity-stars";
@@ -13,12 +13,10 @@ export default function InterviewerProfilePage() {
   const [interviewer, setInterviewer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [slots, setSlots] = useState([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [selectedDateKey, setSelectedDateKey] = useState("");
   const [selectedSlot, setSelectedSlot] = useState(null);
-
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
   const [isSubmittingBook, setIsSubmittingBook] = useState(false);
   const [bookingTopic, setBookingTopic] = useState("");
@@ -69,7 +67,6 @@ export default function InterviewerProfilePage() {
     }
   }, [params.id]);
 
-  // Group slots by date
   const slotsByDate = slots.reduce((acc, slot) => {
     const dateKey = new Date(slot.startTime).toDateString();
     if (!acc[dateKey]) acc[dateKey] = [];
@@ -116,7 +113,6 @@ export default function InterviewerProfilePage() {
       toast.success("Interview session booked! Redirecting to your dashboard...");
       setIsBookModalOpen(false);
 
-      // Refresh slots
       const availRes = await fetch(`/api/interviewers/${params.id}/availability`);
       if (availRes.ok) {
         const availData = await availRes.json();
@@ -145,7 +141,7 @@ export default function InterviewerProfilePage() {
     return (
       <div className="min-h-screen bg-[#09090b] flex flex-col justify-center items-center gap-4 text-stone-300 font-sans">
         <p>{error || "Interviewer not found."}</p>
-        <button 
+        <button
           onClick={() => router.push('/browseinterviewers')}
           className="text-amber-400 hover:text-amber-300 text-sm flex items-center gap-2"
         >
@@ -158,20 +154,12 @@ export default function InterviewerProfilePage() {
   const initial = (interviewer.firstName || interviewer.name || "?").charAt(0).toUpperCase();
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-stone-200 py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-amber-400/30 selection:text-amber-200">
-      <div className="max-w-4xl mx-auto flex flex-col gap-8">
-        
-        {/* Back Link */}
-        <Link 
-          href="/browseinterviewers" 
-          className="w-fit flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 transition-colors"
-        >
-          <ChevronLeft size={16} />
-          Back to interviewers
-        </Link>
+    <div className="min-h-screen bg-[#09090b] text-stone-200 py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-amber-400/30 selection:text-amber-200 mt-10">
+      <Link href="/browseinterviewers" className="w-fit flex items-center gap-1 text-md mb-[6px] text-stone-500 hover:text-stone-300 transition-colors"><ChevronLeft size={16} />Back to Interviewers
+      </Link>
 
-        {/* Profile Card */}
-        <GravityStarsBackground 
+      <div className="max-w-4xl mx-auto flex flex-col gap-8">
+        <GravityStarsBackground
           starsCount={80}
           starsSize={2}
           starsOpacity={0.8}
@@ -181,28 +169,15 @@ export default function InterviewerProfilePage() {
           gravityStrength={60}
           className="border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative !bg-[#151518] text-amber-400"
         >
-          
-          {/* Cover / Glow */}
           <div className="h-32 bg-gradient-to-r from-amber-500/10 via-amber-700/5 to-transparent absolute top-0 left-0 right-0 pointer-events-none" />
-
           <div className="px-6 py-8 sm:px-10 sm:py-12 relative z-10 flex flex-col md:flex-row gap-8 sm:gap-12 items-start text-stone-200">
-            
-            {/* Avatar Column */}
             <div className="flex flex-col items-center gap-4 shrink-0">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#2a2a2f] to-[#1a1a1d] border border-white/10 flex items-center justify-center shadow-xl">
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#2a2a2f] to-[#1a1a1d] border border-white/10 flex items-center justify-center shadow-xl">
                 <span className="text-5xl font-medium text-stone-200">
                   {initial}
                 </span>
               </div>
-              <a 
-                href={`mailto:${interviewer.emailId}`}
-                className="flex items-center gap-2 text-sm text-stone-400 hover:text-stone-200 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full transition-colors w-full justify-center border border-white/5"
-              >
-                <Mail size={16} /> Message
-              </a>
             </div>
-
-            {/* Info Column */}
             <div className="flex-1 min-w-0 w-full">
               <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2">
                 {interviewer.name || interviewer.firstName}
@@ -210,7 +185,7 @@ export default function InterviewerProfilePage() {
               <p className="text-lg text-amber-400/90 font-medium mb-6 flex items-center gap-3 flex-wrap">
                 <span>{interviewer.title}</span>
                 {interviewer.reviewCount > 0 && (
-                  <span className="text-xs bg-amber-400/10 text-amber-400 border border-amber-400/20 px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+                  <span className="text-sm bg-amber-400/10 text-amber-400 border border-amber-400/20 px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
                     ★ {interviewer.averageRating} ({interviewer.reviewCount} {interviewer.reviewCount === 1 ? 'review' : 'reviews'})
                   </span>
                 )}
@@ -251,17 +226,24 @@ export default function InterviewerProfilePage() {
                 </p>
               </div>
             </div>
+
+            <button
+              onClick={() => setIsBookModalOpen(true)}
+              className="shrink-0 bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold px-6 py-3 rounded-xl transition-all shadow-lg shadow-amber-400/20 flex items-center gap-2 cursor-pointer text-lg"
+            >
+              Book Session <ArrowRight size={18} />
+            </button>
           </div>
         </GravityStarsBackground>
 
-        {/* Reviews Section */}
+
         <div className="bg-[#151518] border border-white/10 rounded-3xl p-6 sm:p-10 flex flex-col gap-6">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Star className="text-amber-400 fill-amber-400" size={20} /> Candidate Reviews
           </h2>
 
           {!interviewer.reviews || interviewer.reviews.length === 0 ? (
-            <p className="text-stone-500 text-sm">
+            <p className="text-stone-500 text-md">
               No reviews yet for {interviewer.firstName}. Complete a mock interview to be the first to review!
             </p>
           ) : (
@@ -294,26 +276,6 @@ export default function InterviewerProfilePage() {
             </div>
           )}
         </div>
-
-        {/* CTA / Booking Section */}
-        <div className="bg-[#151518] border border-amber-400/20 rounded-3xl p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-          
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-3">
-              <Calendar className="text-amber-400" /> Book a mock interview
-            </h2>
-            <p className="text-stone-400 text-sm">
-              Schedule a 45-minute session from {interviewer.firstName}'s live available slots. (1 Credit per session)
-            </p>
-          </div>
-          <button
-            onClick={() => setIsBookModalOpen(true)}
-            className="shrink-0 bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-amber-400/20 flex items-center gap-2 cursor-pointer"
-          >
-            Book Session <ArrowRight size={18} />
-          </button>
-        </div>
       </div>
 
       {isBookModalOpen && (
@@ -332,7 +294,6 @@ export default function InterviewerProfilePage() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white">Select Available Time Slot</h3>
-                <p className="text-xs text-stone-400">Interviewer: {interviewer.name || interviewer.firstName}</p>
               </div>
             </div>
 
@@ -356,8 +317,6 @@ export default function InterviewerProfilePage() {
                   )}
                 </select>
               </div>
-
-              {/* Slot Selector */}
               <div>
                 <label className="block text-xs font-semibold text-stone-300 uppercase tracking-wider mb-2">
                   Available Dates & Slots
@@ -371,14 +330,10 @@ export default function InterviewerProfilePage() {
                 ) : availableDates.length === 0 ? (
                   <div className="bg-[#1c1c22] border border-amber-500/20 rounded-2xl p-4 text-center space-y-2">
                     <AlertCircle className="w-6 h-6 text-amber-400 mx-auto" />
-                    <p className="text-xs text-stone-300 font-medium">No open slots available currently</p>
-                    <p className="text-[11px] text-stone-500">
-                      {interviewer.firstName} hasn't published upcoming open slots yet. Check back soon or message them directly.
-                    </p>
+                    <p className="text-sm text-stone-300 font-medium">No open slots available currently</p>   
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {/* Date Selector Pills */}
                     <div className="flex gap-2 overflow-x-auto pb-1">
                       {availableDates.map((dateKey) => {
                         const dateObj = new Date(dateKey);
@@ -388,11 +343,10 @@ export default function InterviewerProfilePage() {
                             key={dateKey}
                             type="button"
                             onClick={() => handleDateSelect(dateKey)}
-                            className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap cursor-pointer ${
-                              isSelected
-                                ? "bg-amber-400 text-amber-950 border-amber-400 font-semibold shadow-md shadow-amber-400/20"
-                                : "bg-[#1c1c22] text-stone-300 border-white/10 hover:border-white/20"
-                            }`}
+                            className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap cursor-pointer ${isSelected
+                              ? "bg-amber-400 text-amber-950 border-amber-400 font-semibold shadow-md shadow-amber-400/20"
+                              : "bg-[#1c1c22] text-stone-300 border-white/10 hover:border-white/20"
+                              }`}
                           >
                             {dateObj.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
                           </button>
@@ -400,7 +354,6 @@ export default function InterviewerProfilePage() {
                       })}
                     </div>
 
-                    {/* Time Slot Selector Pills for Selected Date */}
                     {selectedDateKey && (
                       <div className="grid grid-cols-2 gap-2 pt-2">
                         {(slotsByDate[selectedDateKey] || []).map((slot) => {
@@ -419,11 +372,10 @@ export default function InterviewerProfilePage() {
                               key={slot._id}
                               type="button"
                               onClick={() => setSelectedSlot(slot)}
-                              className={`p-3 rounded-xl text-xs flex flex-col items-center justify-center border transition-all cursor-pointer ${
-                                isSelected
-                                  ? "bg-amber-400/20 text-amber-300 border-amber-400 font-semibold ring-1 ring-amber-400"
-                                  : "bg-[#1c1c22] text-stone-300 border-white/10 hover:border-amber-400/40"
-                              }`}
+                              className={`p-3 rounded-xl text-xs flex flex-col items-center justify-center border transition-all cursor-pointer ${isSelected
+                                ? "bg-amber-400/20 text-amber-300 border-amber-400 font-semibold ring-1 ring-amber-400"
+                                : "bg-[#1c1c22] text-stone-300 border-white/10 hover:border-amber-400/40"
+                                }`}
                             >
                               <span className="font-semibold">{startFormatted} - {endFormatted}</span>
                               <span className="text-[10px] text-stone-400 mt-0.5">45 min Session</span>
@@ -442,7 +394,7 @@ export default function InterviewerProfilePage() {
                 </span>
                 <span className="font-bold">1 Credit</span>
               </div>
-
+              
               <button
                 type="submit"
                 disabled={isSubmittingBook || !selectedSlot}
@@ -454,7 +406,6 @@ export default function InterviewerProfilePage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

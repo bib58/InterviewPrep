@@ -1,5 +1,5 @@
 import { BubbleBackground } from "@/components/animate-ui/components/backgrounds/bubble";
-import { AI_TAGS, AVATARS, ROLES, SLOTS } from "@/lib/data";
+import { ROLES, SLOTS } from "../lib/data";
 import { Bot, Wallet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -10,19 +10,16 @@ const GoldTitle = ({ children }) => (
     {children}
   </span>
 );
-
 const GrayTitle = ({ children }) => (
   <span className="text-white">
     {children}
   </span>
 );
-
 const SectionLabel = ({ children }) => (
   <div className="inline-block px-3 py-1 mb-4 rounded-full bg-white/5 border border-white/10 text-stone-400 text-sm font-medium tracking-wide uppercase">
     {children}
   </div>
 );
-
 const SectionHeading = ({ gray, gold }) => (
   <h2 className="text-4xl md:text-5xl font-serif tracking-tight">
     <GrayTitle>{gray}</GrayTitle> <GoldTitle>{gold}</GoldTitle>
@@ -119,21 +116,15 @@ function MockUI({ rows = 3 }) {
   );
 }
 
-export function BentoCard({ icon, title, desc, children, className = "" }) {
+export function Card({ icon, title, desc, children, className = "" }) {
   return (
-    <div
-      className={`relative bg-[#0f0f11] border border-white/10 hover:border-amber-400/20 rounded-2xl p-9 h-full transition duration-300 overflow-hidden ${className}`}
-    >
+    <div className={`relative bg-[#0f0f11] border border-white/10 hover:border-amber-400/20 rounded-2xl p-6 h-full transition duration-300 overflow-hidden ${className}`}>
       <div className="absolute inset-0 bg-linear-to-br from-amber-400/5 via-transparent pointer-events-none" />
-
       <span className="w-11 h-11 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-xl mb-5">
         {icon}
       </span>
-
-      <h3 className="font-serif text-xl tracking-tight mb-2">{title}</h3>
-
-      <p className="text-sm text-stone-400 leading-relaxed">{desc}</p>
-
+      <h3 className="font-serif text-2xl tracking-tight mb-2">{title}</h3>
+      <p className="text-md text-stone-400 leading-relaxed">{desc}</p>
       {children}
     </div>
   );
@@ -142,8 +133,7 @@ export function BentoCard({ icon, title, desc, children, className = "" }) {
 export default function LandingPage() {
   return (
     <div className="bg-black overflow-x-hidden min-h-screen text-white">
-      
-      <BubbleBackground className="h-[90vh]">
+      <BubbleBackground className="h-[85vh]">
         <section className="relative grid grid-cols-1 lg:grid-cols-5 px-4 sm:px-8 pt-28 sm:pt-32 py-15 overflow-hidden z-10">
           <div className="col-span-full lg:col-span-3 flex flex-col items-center justify-center text-center lg:-rotate-2">
             <h1 className="font-serif relative text-5xl sm:text-6xl lg:text-7xl tracking-tighter max-w-4xl mt-6">
@@ -151,29 +141,25 @@ export default function LandingPage() {
               <br />
               <GoldTitle>with real experts</GoldTitle>
             </h1>
-
-            <p className="relative text-sm sm:text-base md:text-lg text-stone-400 max-w-xl mt-6 leading-relaxed">
+            <p className="relative text-sm sm:text-base md:text-lg text-gray-300 max-w-xl mt-6 leading-relaxed">
               Book 1:1 mock interviews with senior engineers from top companies.
-              Get AI-powered feedback, role-specific questions, and the confidence
-              to land your dream job.
+              <br></br>
+              Get the confidence to land your dream job.
             </p>
 
             <div className="relative flex justify-center gap-2 sm:gap-4 mt-10 sm:w-auto">
-              <Link href="/onboarding">
-                <button className="px-8 py-2.5 bg-amber-400 text-amber-950 hover:bg-amber-500 cursor-pointer rounded-xl font-semibold transition-colors">
+              <Link href="#features">
+                <button className="px-8 py-2.5 text-lg bg-amber-400 text-amber-950 hover:bg-amber-500 cursor-pointer rounded-xl font-semibold transition-colors">
                   Get started
                 </button>
               </Link>
-
               <Link href="/browseinterviewers">
-                <button className="px-7 py-2.5 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-xl font-semibold transition-colors cursor-pointer">
+                <button className="px-7 py-2.5 text-lg bg-white/10 border border-white/10 text-white hover:bg-white/15 rounded-xl font-semibold transition-colors cursor-pointer">
                   Browse Interviewers →
                 </button>
               </Link>
             </div>
           </div>
-
-          {/* RIGHT */}
           <div className="col-span-full lg:col-span-2 flex items-center justify-center lg:justify-start mt-12 lg:mt-0 lg:rotate-3">
             <CodeDemo />
           </div>
@@ -181,95 +167,62 @@ export default function LandingPage() {
       </BubbleBackground>
 
 
-      <section className="relative z-10 py-20 max-w-5xl mx-auto px-6">
+      <section id="features" className="relative z-10 py-20 max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <SectionLabel>Features</SectionLabel>
-          <SectionHeading
-            gray="Everything you need,"
-            gold="nothing you don't"
-          />
+          <SectionHeading gray="Everything you need," gold="nothing you don't" />
         </div>
 
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 md:col-span-7">
-            <BentoCard
+            <Card
               icon={<Bot size={20} className="text-amber-400" />}
               title={<GrayTitle>AI Question Generator</GrayTitle>}
               desc="Interviewers get a live AI co-pilot generating role-specific questions on demand — system design, behavioural, DSA — all tailored to the candidate's level."
             >
               <div className="flex flex-wrap gap-2 mt-5">
-                {AI_TAGS.map((t) => (
-                  <Badge key={t.label} variant={t.active ? "default" : "outline"} className="bg-amber-400 text-amber-950 hover:bg-amber-500">
-                    {t.label}
+                {["Frontend", "Backend", "Full-stack", "DevOps", "MLOps", "System Design", "Mobile"].map((t) => (
+                  <Badge key={t} className="bg-amber-400 text-amber-950 hover:bg-amber-500 text-sm" >
+                    {t}
                   </Badge>
                 ))}
               </div>
-            </BentoCard>
+            </Card>
           </div>
 
           <div className="col-span-12 md:col-span-5">
-            <BentoCard
+            <Card
               icon={<Wallet size={16} className="text-amber-400" />}
               title={<GrayTitle>Credit System</GrayTitle>}
               desc="Subscribe for monthly credits. Book sessions. Interviewers earn and withdraw any time."
-            >
-              <div className="mt-5 rounded-xl bg-[#141417] border border-white/10 p-5 flex justify-between items-end">
-                <div>
-                  <p className="text-xs text-stone-600 mb-1">Your balance</p>
-                  <p className="font-serif text-4xl leading-none bg-linear-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent">
-                    28
-                  </p>
-                  <p className="text-xs text-stone-600 mt-1">
-                    credits remaining
-                  </p>
-                </div>
-
-                <Badge variant="secondary" className="bg-white/10 text-white border-none">+10 this month</Badge>
-              </div>
-            </BentoCard>
+            />
           </div>
 
           <div className="col-span-12 md:col-span-4">
-            <BentoCard
+            <Card
               icon="📹"
               title="HD Video Calls"
               desc="Powered by Stream. Screen sharing, recording, and instant playback links — all built in."
             >
               <MockUI rows={3} />
-            </BentoCard>
+            </Card>
           </div>
 
           <div className="col-span-12 md:col-span-4">
-            <BentoCard
-              icon="💬"
-              title="Persistent Chat"
-              desc="Message your interviewer before and after the call. Share resources, prep notes, and follow-ups in one thread."
-            />
-          </div>
-
-          <div className="col-span-12 md:col-span-4">
-            <BentoCard
-              icon="🔒"
-              title="Security by Arcjet"
-              desc="Bot protection, rate limiting, and abuse prevention baked into every API route."
-            />
-          </div>
-
-          <div className="col-span-12 md:col-span-6">
-            <BentoCard
+            <Card
               icon="📊"
               title={<GrayTitle>AI Feedback Reports</GrayTitle>}
               desc="Post-interview analysis by Gemini with actionable insights."
             >
               <MockUI rows={5} />
-            </BentoCard>
+            </Card>
           </div>
 
-          <div className="col-span-12 md:col-span-6">
-            <BentoCard
+          <div className="col-span-12 md:col-span-4">
+            <Card
               icon="🗓️"
               title={<GoldTitle>Slot-based Scheduling</GoldTitle>}
-              desc="Interviewers set availability once. Interviewees pick from open slots and confirm with one click — no back-and-forth needed."
+              desc="Interviewers set availability once. Interviewees pick from open slots and confirm with one click."
             >
               <div className="flex flex-wrap gap-2 mt-5">
                 {SLOTS.map((s) => (
@@ -281,19 +234,18 @@ export default function LandingPage() {
                   </span>
                 ))}
               </div>
-            </BentoCard>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* ROLES */}
       <section className="relative z-10 pb-28 max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
-          <SectionLabel>Who it&apos;s for</SectionLabel>
+          <SectionLabel>Whom it&apos;s for</SectionLabel>
           <SectionHeading gray="Built for both sides" gold="of the table" />
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-8">
           {ROLES.map((role) => (
             <div
               key={role.label}
@@ -305,11 +257,11 @@ export default function LandingPage() {
                 {role.label}
               </span>
 
-              <h3 className="font-serif text-2xl tracking-tight mb-4">
+              <h3 className="font-serif text-3xl tracking-tight mb-4">
                 {role.title}
               </h3>
 
-              <p className="text-sm text-stone-400 leading-relaxed mb-8">
+              <p className="text-md text-stone-400 leading-relaxed mb-8">
                 {role.desc}
               </p>
 
@@ -328,47 +280,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* PRICING */}
       <section className="relative z-10 pb-28 max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <SectionLabel>Pricing</SectionLabel>
-          <SectionHeading
-            gray="Simple, transparent"
-            gold="credit-based plans"
-          />
-          <p className="text-stone-400 mt-3 text-sm">
+          <SectionHeading gray="Simple, transparent" gold="credit-based plans" />
+          <p className="text-stone-400 mt-3 text-lg">
             Each credit = one session. Unused credits roll over.
           </p>
         </div>
-
         <PricingSection />
-      </section>
-
-      {/* CTA */}
-      <section className="relative z-10 pb-28 max-w-5xl mx-auto px-6">
-        <BubbleBackground className="relative border border-amber-400/20 rounded-3xl px-3 sm:px-16 py-20 bg-linear-to-br from-amber-400/5 text-center overflow-hidden">
-          <div className="relative z-10">
-            <h2 className="font-serif relative text-4xl md:text-5xl leading-tight tracking-tight mb-4">
-              <GrayTitle>Your next interview</GrayTitle>
-              <br />
-              <GoldTitle>starts here</GoldTitle>
-            </h2>
-
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/onboarding" className="relative">
-                <button className="w-full sm:w-auto px-8 py-3 bg-amber-400 text-amber-950 hover:bg-amber-500 rounded-xl font-semibold transition-colors">
-                  Get started
-                </button>
-              </Link>
-
-              <Link href="/explore" className="relative">
-                <button className="w-full sm:w-auto px-8 py-3 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-xl font-semibold transition-colors">
-                  Browse Interviewers →
-                </button>
-              </Link>
-            </div>
-          </div>
-        </BubbleBackground>
       </section>
       <div className="py-12 flex justify-center items-center text-2xl font-extrabold border-t ">
         Made with ❤️ by Bibhu Kumar Singh

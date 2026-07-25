@@ -11,19 +11,19 @@ import { registerUser } from "../../../slices/authSlice";
 import { UserRound, UserCheck, Briefcase } from "lucide-react";
 
 const YEARS_OPTIONS = [
-  { label: '0-2 years', value: '0-2' },
-  { label: '3-5 years', value: '3-5' },
-  { label: '6-10 years', value: '6-10' },
-  { label: '10+ years', value: '10+' },
+    { label: '0-2 years', value: '0-2' },
+    { label: '3-5 years', value: '3-5' },
+    { label: '6-10 years', value: '6-10' },
+    { label: '10+ years', value: '10+' },
 ];
 
 const CATEGORIES = [
-  { label: 'Frontend', value: 'Frontend' },
-  { label: 'Backend', value: 'Backend' },
-  { label: 'Fullstack', value: 'Fullstack' },
-  { label: 'Mobile', value: 'Mobile' },
-  { label: 'DevOps', value: 'DevOps' },
-  { label: 'System Design', value: 'System Design' },
+    { label: 'Frontend', value: 'Frontend' },
+    { label: 'Backend', value: 'Backend' },
+    { label: 'Fullstack', value: 'Fullstack' },
+    { label: 'Mobile', value: 'Mobile' },
+    { label: 'DevOps', value: 'DevOps' },
+    { label: 'System Design', value: 'System Design' },
   { label: 'Behavioral', value: 'Behavioral' },
 ];
 
@@ -97,7 +97,7 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center px-4 py-10">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center px-4 py-10 mt-10">
             <div className="w-full max-w-lg">
                 <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl overflow-hidden">
                     <div className="text-center px-8 pt-8">
@@ -114,8 +114,7 @@ export default function Signup() {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                            {/* Role Selection */}
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                             <div>
                                 <label className="block text-white text-lg mb-2 font-medium">
                                     I am joining as a
@@ -124,20 +123,20 @@ export default function Signup() {
                                     <button
                                         type="button"
                                         onClick={() => setValue('role', 'user-interviewee')}
-                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all cursor-pointer ${selectedRole === 'user-interviewee'
+                                        className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl border transition-all cursor-pointer ${selectedRole === 'user-interviewee'
                                                 ? 'bg-white text-purple-700 border-white font-bold shadow-lg scale-[1.02]'
                                                 : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
                                             }`}
                                     >
                                         <UserCheck className="h-7 w-7 mb-1" />
-                                        <span className="text-base">Interviewee</span>
-                                        <span className="text-xs opacity-75">Practice Interviews</span>
+                                        <span className="text-md">Interviewee</span>
+                                        <span className="text-sm opacity-75">Practice Interviews</span>
                                     </button>
 
                                     <button
                                         type="button"
                                         onClick={() => setValue('role', 'user-interviewer')}
-                                        className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all cursor-pointer ${selectedRole === 'user-interviewer'
+                                        className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl border transition-all cursor-pointer ${selectedRole === 'user-interviewer'
                                                 ? 'bg-white text-purple-700 border-white font-bold shadow-lg scale-[1.02]'
                                                 : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
                                             }`}
@@ -150,10 +149,7 @@ export default function Signup() {
                             </div>
 
                             <div>
-                                <label className="block text-white text-lg mb-2 font-medium">
-                                    First Name
-                                </label>
-
+                                <label className="block text-white text-lg mb-2 font-medium">Name</label>
                                 <input
                                     type="text"
                                     placeholder="John"
@@ -161,11 +157,11 @@ export default function Signup() {
                                     className={`w-full rounded-xl bg-white/20 border ${errors.firstName
                                         ? "border-red-400"
                                         : "border-white/20"
-                                        } px-5 py-2 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
+                                        } px-5 py-2 text-white text-lg placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                 />
 
                                 {errors.firstName && (
-                                    <p className="text-red-300 mt-2 text-md">
+                                    <p className="text-red-400 mt-2 text-md">
                                         {errors.firstName.message}
                                     </p>
                                 )}
@@ -183,11 +179,11 @@ export default function Signup() {
                                     className={`w-full rounded-xl bg-white/20 border ${errors.emailId
                                         ? "border-red-400"
                                         : "border-white/20"
-                                        } px-5 py-2 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
+                                        } px-5 py-2 text-white text-lg placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                 />
 
                                 {errors.emailId && (
-                                    <p className="text-red-300 mt-2 text-md">
+                                    <p className="text-red-400 mt-2 text-md">
                                         {errors.emailId.message}
                                     </p>
                                 )}
@@ -197,7 +193,6 @@ export default function Signup() {
                                 <label className="block text-white text-lg mb-2 font-medium">
                                     Phone Number
                                 </label>
-
                                 <input
                                     type="tel"
                                     maxLength={10}
@@ -206,17 +201,14 @@ export default function Signup() {
                                     className={`w-full rounded-xl bg-white/20 border ${errors.phoneNumber
                                         ? "border-red-400"
                                         : "border-white/20"
-                                        } px-5 py-2 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
+                                        } px-5 py-2 text-lg text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                 />
-
                                 {errors.phoneNumber && (
-                                    <p className="text-red-300 mt-2 text-md">
+                                    <p className="text-red-400 mt-2 text-md">
                                         {errors.phoneNumber.message}
                                     </p>
                                 )}
                             </div>
-
-                            {/* Password */}
                             <div>
                                 <label className="block text-white text-lg mb-2 font-medium">
                                     Password
@@ -230,7 +222,7 @@ export default function Signup() {
                                         className={`w-full rounded-xl bg-white/20 border ${errors.password
                                             ? "border-red-400"
                                             : "border-white/20"
-                                            } px-5 pr-14 py-2 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
+                                            } px-5 pr-14 py-2 text-lg text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                     />
 
                                     <button
@@ -281,7 +273,7 @@ export default function Signup() {
                                 </div>
 
                                 {errors.password && (
-                                    <p className="text-red-300 mt-2 text-md">
+                                    <p className="text-red-400 mt-2 text-md">
                                         {errors.password.message}
                                     </p>
                                 )}
@@ -299,11 +291,11 @@ export default function Signup() {
                                     className={`w-full rounded-xl bg-white/20 border ${confirmPasswordError
                                         ? "border-red-400"
                                         : "border-white/20"
-                                        } px-5 py-2 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
+                                        } px-5 py-2 text-lg text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                 />
 
                                 {confirmPasswordError && (
-                                    <p className="text-red-300 mt-2 text-md">
+                                    <p className="text-red-400 mt-2 text-md">
                                         {confirmPasswordError}
                                     </p>
                                 )}
@@ -321,7 +313,7 @@ export default function Signup() {
                                                 {...register("title")}
                                                 className={`w-full rounded-xl bg-white/20 border ${errors.title ? "border-red-400" : "border-white/20"} px-5 py-2 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                             />
-                                            {errors.title && <p className="text-red-300 text-sm">{errors.title.message}</p>}
+                                            {errors.title && <p className="text-red-400 text-sm">{errors.title.message}</p>}
                                         </div>
 
                                         <div className="flex flex-col gap-2">
@@ -332,7 +324,7 @@ export default function Signup() {
                                                 {...register("company")}
                                                 className={`w-full rounded-xl bg-white/20 border ${errors.company ? "border-red-400" : "border-white/20"} px-5 py-2 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                             />
-                                            {errors.company && <p className="text-red-300 text-sm">{errors.company.message}</p>}
+                                            {errors.company && <p className="text-red-400 text-sm">{errors.company.message}</p>}
                                         </div>
                                     </div>
 
@@ -353,7 +345,7 @@ export default function Signup() {
                                                 </button>
                                             ))}
                                         </div>
-                                        {errors.yearsExp && <p className="text-red-300 text-sm">{errors.yearsExp.message}</p>}
+                                        {errors.yearsExp && <p className="text-red-400 text-sm">{errors.yearsExp.message}</p>}
                                     </div>
 
                                     <div className="flex flex-col gap-2">
@@ -376,7 +368,7 @@ export default function Signup() {
                                                 );
                                             })}
                                         </div>
-                                        {errors.categories && <p className="text-red-300 text-sm">{errors.categories.message}</p>}
+                                        {errors.categories && <p className="text-red-400 text-sm">{errors.categories.message}</p>}
                                     </div>
 
                                     <div className="flex flex-col gap-2">
@@ -389,7 +381,7 @@ export default function Signup() {
                                             {...register("bio")}
                                             className={`w-full rounded-xl bg-white/20 border ${errors.bio ? "border-red-400" : "border-white/20"} px-5 py-3 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition resize-none`}
                                         />
-                                        {errors.bio && <p className="text-red-300 text-sm">{errors.bio.message}</p>}
+                                        {errors.bio && <p className="text-red-400 text-sm">{errors.bio.message}</p>}
                                     </div>
 
                                     <div className="flex flex-col gap-2">
@@ -399,9 +391,9 @@ export default function Signup() {
                                             type="text"
                                             placeholder="e.g. username@bank"
                                             {...register("upiId")}
-                                            className={`w-full rounded-xl bg-white/20 border ${errors.upiId ? "border-red-400" : "border-white/20"} px-5 py-3 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
+                                            className={`w-full rounded-xl bg-white/20 border ${errors.upiId ? "border-red-400" : "border-white/20"} px-5 text-lg py-3 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-white transition`}
                                         />
-                                        {errors.upiId && <p className="text-red-300 text-sm">{errors.upiId.message}</p>}
+                                        {errors.upiId && <p className="text-red-400 text-sm">{errors.upiId.message}</p>}
                                     </div>
                                 </div>
                             )}
@@ -421,7 +413,7 @@ export default function Signup() {
                             </button>
                         </form>
 
-                        <p className="text-center mt-8 text-white/80">
+                        <p className="text-center mt-8 text-lg text-white/80">
                             Already have an account?{" "}
                             <Link
                                 href="/login"
