@@ -640,7 +640,7 @@ function InterviewerDashboardContent() {
                                 </p>
                               </div>
                             </div>
-                            <span className={`text-sm font-bold px-2 py-1 rounded-lg border ${feedbackSubmitted
+                            <span className={`text-xs font-bold px-2 py-1 rounded-lg border ${feedbackSubmitted
                               ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
                               : "text-amber-400 bg-amber-500/10 border-amber-500/20"
                               }`}>

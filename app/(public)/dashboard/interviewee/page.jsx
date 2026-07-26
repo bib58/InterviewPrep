@@ -453,10 +453,7 @@ function IntervieweeDashboardContent() {
                             <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-2.5 mb-2">
                               <div className="flex items-center justify-between mb-1.5">
                                 <span className="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
-                                  <Star size={12} className="fill-amber-400" /> Rating: {item.feedback.overallRating || "GOOD"}
-                                </span>
-                                <span className="text-sm font-medium text-stone-300">
-                                  Score: {item.feedback.score}/10
+                                  <Star size={12} className="fill-amber-400" /> Feedback: {item.feedback.overallRating || "GOOD"}
                                 </span>
                               </div>
                               <p className="text-xs text-stone-300 line-clamp-2">

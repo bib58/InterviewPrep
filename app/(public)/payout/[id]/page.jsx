@@ -94,7 +94,7 @@ export default function PayoutReviewPage({ params }) {
           <p className="text-sm text-stone-400">{error}</p>
           <button
             onClick={() => router.push('/')}
-            className="px-4 py-2 bg-stone-850 hover:bg-stone-800 text-xs font-semibold rounded-xl border border-white/10 transition"
+            className="px-4 py-2 bg-stone-850 text-md hover:bg-stone-800 text-xs font-semibold rounded-xl border border-white/10 transition"
           >
             Go Back Home
           </button>
@@ -131,7 +131,7 @@ export default function PayoutReviewPage({ params }) {
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-6">
             <div>
-              <span className="text-[10px] text-stone-500 uppercase tracking-widest block font-bold">Net Payout Amount</span>
+              <span className="text-[12px] text-stone-500 uppercase tracking-widest block font-bold">Net Payout Amount</span>
               <span className="text-4xl font-extrabold text-white font-mono mt-1 block">
                 ${Number(payout?.netAmount || 0).toFixed(2)}
               </span>
@@ -156,21 +156,21 @@ export default function PayoutReviewPage({ params }) {
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-stone-400">Credits Requested</span>
-                  <span className="font-semibold text-white">{payout?.credits} Cr</span>
+                  <span className="text-stone-400 text-md">Credits Requested</span>
+                  <span className="font-semibold text-white text-md">{payout?.credits} Cr</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-stone-400">Platform Fee (20%)</span>
-                  <span className="font-mono text-stone-400">-${Number(payout?.platformFee || 0).toFixed(2)}</span>
+                  <span className="text-stone-400 text-md">Platform Fee (20%)</span>
+                  <span className="font-mono text-stone-400 text-md">-${Number(payout?.platformFee || 0).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs border-t border-white/5 pt-2">
-                  <span className="text-stone-400">Payment Method</span>
-                  <span className="font-semibold text-white">{payout?.paymentMethod}</span>
+                  <span className="text-stone-400 text-md">Payment Method</span>
+                  <span className="font-semibold text-white text-md">{payout?.paymentMethod}</span>
                 </div>
 
                 <div className="bg-stone-900/50 border border-white/5 rounded-xl p-3 mt-4 space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-stone-500 uppercase tracking-wider font-bold">UPI ID</span>
+                    <span className="text-[12px] text-stone-500 uppercase tracking-wider font-bold">UPI ID</span>
                     <button
                       onClick={handleCopy}
                       className="text-stone-400 hover:text-white transition flex items-center gap-1 text-[10px]"
@@ -188,24 +188,23 @@ export default function PayoutReviewPage({ params }) {
                       )}
                     </button>
                   </div>
-                  <div className="text-sm font-semibold text-white font-mono truncate">{payout?.paymentDetail}</div>
+                  <div className="text-md font-semibold text-white font-mono truncate">{payout?.paymentDetail}</div>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider">Interviewer Profile</h3>
-
+              <h3 className="text-sm font-bold text-stone-400 uppercase tracking-wider">Interviewer Profile</h3>
               <div className="space-y-3">
-                <div className="flex justify-between items-center text-xs">
+                <div className="flex justify-between items-center text-sm">
                   <span className="text-stone-400">Name</span>
                   <span className="font-semibold text-white">{interviewer?.firstName || "Unknown"}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
+                <div className="flex justify-between items-center text-sm">
                   <span className="text-stone-400">Email</span>
                   <span className="font-semibold text-white truncate max-w-[180px]" title={interviewer?.emailId}>{interviewer?.emailId || "N/A"}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
+                <div className="flex justify-between items-center text-sm">
                   <span className="text-stone-400">Title / Company</span>
                   <span className="font-semibold text-white text-right">
                     {interviewer?.title ? `${interviewer.title} at ${interviewer.company || 'N/A'}` : 'N/A'}
@@ -234,7 +233,7 @@ export default function PayoutReviewPage({ params }) {
               <button
                 onClick={handleComplete}
                 disabled={updating}
-                className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white font-bold py-3.5 px-6 rounded-2xl transition shadow-lg shadow-emerald-600/10 flex items-center justify-center gap-2 text-sm cursor-pointer"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white font-bold py-3.5 px-6 rounded-2xl transition shadow-lg shadow-emerald-600/10 flex items-center justify-center gap-2 text-md cursor-pointer"
               >
                 {updating ? (
                   <>
@@ -249,7 +248,7 @@ export default function PayoutReviewPage({ params }) {
                 )}
               </button>
             ) : (
-              <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-2xl p-4 text-center text-emerald-400 text-xs flex items-center justify-center gap-2 font-medium">
+              <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-2xl p-4 text-center text-emerald-400 text-md flex items-center justify-center gap-2 font-medium">
                 <CheckCircle2 className="w-4 h-4" />
                 This withdrawal request has been completed and marked as processed.
               </div>
