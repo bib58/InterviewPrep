@@ -1,12 +1,9 @@
-'use client';
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./Providers";
 import { Toaster } from "sonner";
-import Navbar from "@/components/Navbar";
-import { usePathname } from "next/navigation";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,9 +20,6 @@ export const metadata: Metadata = {
   description: "Prepare for interviews and get hired",
 };
 
-const pathname = usePathname();
-const hideNavbar = pathname.startsWith("/call/");
-
 export default function RootLayout({
   children,
 }: {
@@ -36,8 +30,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Providers>
           <Toaster richColors />
-          {!hideNavbar && <Navbar />}
-          {children}
+          <LayoutWrapper>{children}</LayoutWrapper>
         </Providers>
       </body>
     </html>
