@@ -25,6 +25,11 @@ InterviewPrep connects candidates with expert interviewers for live practice ses
 
 ---
 
+* The lean() option in Mongoose skip hydrating the result documents and return plain old JavaScript objects (POJOs) instead of full Mongoose Documents.
+* 
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Configure Environment Variables

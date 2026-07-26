@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import { verifyUser } from '@/lib/auth';
-import Interviewer from '@/lib/models/Interviewer';
-import { Payout } from '@/lib/models/Payout';
-import { WithdrawalRequestEmail } from '@/components/WithdrawalRequestEmail';
+import dbConnect from '../../../../lib/db';
+import { verifyUser } from '../../../../lib/auth';
+import Interviewer from '../../../../lib/models/Interviewer';
+import { Payout } from '../../../../lib/models/Payout';
+import { WithdrawalRequestEmail } from '../../../../components/WithdrawalRequestEmail';
 import { Resend } from 'resend';
 
 
@@ -67,7 +67,6 @@ export async function POST(req) {
     const netAmount = creditNum * (1 - PLATFORM_FEE_RATE) * 5;
     const platformFee = creditNum * PLATFORM_FEE_RATE * 5;
 
-    // Deduct credit balance
     interviewer.creditBalance = Math.max(0, currentBalance - creditNum);
     if (typeof interviewer.credits === 'number') {
       interviewer.credits = Math.max(0, interviewer.credits - creditNum);
@@ -84,7 +83,6 @@ export async function POST(req) {
       status: 'PROCESSING',
     });
 
-    // Send email to admin
     try {
       if (!process.env.RESEND_API_KEY) {
         throw new Error("RESEND_API_KEY is not defined in the environment variables. Please add it to your Vercel project settings.");

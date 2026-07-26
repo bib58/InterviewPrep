@@ -1,21 +1,19 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import Interviewer from '@/lib/models/Interviewer';
-import { Booking, BookingStatus } from '@/lib/models/Booking';
+import dbConnect from '../../../../../lib/db';
+import Interviewer from '../../../../../lib/models/Interviewer';
+import { Booking, BookingStatus } from '../../../../../lib/models/Booking';
 
-export async function GET(request, { params }) {
+export async function GET(req, { params }) {
   try {
     await dbConnect();
     const resolvedParams = await params;
     const { id } = resolvedParams;
 
-    if (!id) {
+    if (!id)
       return NextResponse.json({ error: "Interviewer ID is required" }, { status: 400 });
-    }
 
     const now = new Date();
 
-    // Clean up past availability slots from database
     await Interviewer.updateOne(
       { _id: id },
       { $pull: { availableSlots: { endTime: { $lt: now } } } }
@@ -26,7 +24,6 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: "Interviewer not found" }, { status: 404 });
     }
 
-    // Fetch existing bookings to exclude already booked slots
     const bookings = await Booking.find({
       interviewerId: id,
       status: BookingStatus.SCHEDULED,
@@ -58,9 +55,6 @@ export async function GET(request, { params }) {
     return NextResponse.json({ slots: availableSlots }, { status: 200 });
   } catch (error) {
     console.error("Error fetching interviewer availability:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch interviewer availability" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch interviewer availability" }, { status: 500 });
   }
 }

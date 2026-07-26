@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
-
+import { useEffect, useCallback, useState, useRef } from "react";
 import { StreamTheme, SpeakerLayout, useCallStateHooks, useCall, CallingState, CallControls } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
-
 import { Chat, Channel, MessageList, MessageComposer, Window, useCreateChatClient } from "stream-chat-react";
 import "stream-chat-react/dist/css/index.css";
-
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Sparkles, Loader2 } from "lucide-react";
+import { MessageSquare, Sparkles, Loader2, Clock } from "lucide-react";
 import AIQuestionsPanel from "./AIQuestions";
 
 export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey, token, currentUser }) {
@@ -18,10 +15,13 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
   const callingState = useCallCallingState();
 
   const [activeTab, setActiveTab] = useState("chat");
+  const [timeLeft, setTimeLeft] = useState(null);
+  const leavingRef = useRef(false);
 
   const handleLeave = useCallback(async () => {
+    if (leavingRef.current) return;
+    leavingRef.current = true;
     try {
-      // Auto-complete the booking and transfer credits when a user ends/leaves the call
       await fetch(`/api/bookings/${booking.id}/complete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,6 +39,25 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
       onLeave();
     }
   }, [call, onLeave, booking.id]);
+
+  useEffect(() => {
+    const checkTime = () => {
+      if (!booking.endTime) return;
+      const end = new Date(booking.endTime).getTime();
+      const now = Date.now();
+      const remaining = end - now;
+
+      if (remaining <= 0) {
+        handleLeave();
+      } else {
+        setTimeLeft(Math.max(0, Math.ceil(remaining / 1000)));
+      }
+    };
+
+    checkTime();
+    const interval = setInterval(checkTime, 1000);
+    return () => clearInterval(interval);
+  }, [booking.endTime, handleLeave]);
 
   const chatClient = useCreateChatClient({
     apiKey,
@@ -76,14 +95,13 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
   if (callingState === CallingState.LEFT) {
     return (
       <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center gap-3">
-        <p className="text-stone-400 text-sm">Leaving call…</p>
+        <p className="text-stone-400 text-md">Leaving call…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[92vh] bg-[#0a0a0b] flex flex-col overflow-hidden">
-      {/* Top bar */}
+    <div className="min-h-[92vh] bg-[#0a0a0b] flex flex-col overflow-hidden mt-18">
       <div className="flex items-center justify-between px-6 py-3 border-b border-white/8 shrink-0">
         <div className="flex items-center gap-2">
           <Badge
@@ -91,7 +109,7 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
             className="border-white/10 text-stone-500 text-xs"
           >
             {booking.interviewer.name}
-            <span className="text-stone-700 mx-1.5">×</span>
+            <span className="text-stone-700 mx-1.5">X</span>
             {booking.interviewee.name}
           </Badge>
           {isInterviewer && (
@@ -103,11 +121,25 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
             </Badge>
           )}
         </div>
-      </div>
 
-      {/* Body: video + side panel */}
+        {timeLeft !== null && (
+          <div
+            className={`px-3 py-1 rounded-lg border text-xs font-mono font-medium flex items-center gap-1.5 transition-all duration-300 ${
+              timeLeft < 60
+                ? "bg-red-500/10 border-red-500/30 text-red-400 animate-pulse"
+                : timeLeft < 300
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                  : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+            }`}
+          >
+            <Clock size={13} className={timeLeft < 60 ? "animate-spin" : ""} />
+            <span>
+              {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, "0")}
+            </span>
+          </div>
+        )}
+      </div>
       <div className="flex flex-1 min-h-0">
-        {/* ── LEFT: Video ── */}
         <div className="flex flex-col flex-1 min-w-0">
           <StreamTheme>
             <SpeakerLayout participantBarPosition="bottom" />
@@ -115,9 +147,7 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
           </StreamTheme>
         </div>
 
-        {/* ── RIGHT: Chat / AI panel ── */}
         <div className="w-85 shrink-0 flex flex-col border-l border-white/8 bg-[#0a0a0b]">
-          {/* Tab switcher */}
           <div className="flex border-b border-white/8 shrink-0">
             <button
               type="button"
@@ -131,7 +161,6 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
               Chat
             </button>
 
-            {/* AI Questions tab — interviewer only */}
             {isInterviewer && (
               <button
                 type="button"
@@ -147,7 +176,6 @@ export default function CallUI({ callId, isInterviewer, booking, onLeave, apiKey
             )}
           </div>
 
-          {/* Panel content */}
           <div className="flex-1 min-h-0 overflow-hidden">
             {activeTab === "chat" ? (
               chatClient && chatChannel ? (

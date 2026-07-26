@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import { verifyUser } from '@/lib/auth';
+import dbConnect from '../../../../../lib/db';
+import { verifyUser } from '../../../../../lib/auth';
 import Interviewer from '../../../../../lib/models/Interviewer';
 import { Booking, BookingStatus } from '../../../../../lib/models/Booking';
 import { Review } from '../../../../../lib/models/Review';
@@ -34,24 +34,20 @@ export async function POST(req, { params }) {
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
-    // Ensure the user submitting is the interviewee of the booking
     if (booking.intervieweeId.toString() !== user._id.toString()) {
       return NextResponse.json({ error: 'Unauthorized: Only the interviewee can review this session' }, { status: 403 });
     }
 
-    // Ensure the booking status is COMPLETED or it is a past/expired scheduled session
     const isCompleted = booking.status === BookingStatus.COMPLETED;
     const isExpiredScheduled = booking.status === BookingStatus.SCHEDULED && new Date(booking.endTime).getTime() < Date.now();
     if (!isCompleted && !isExpiredScheduled) {
       return NextResponse.json({ error: 'Reviews can only be submitted for completed or past/expired sessions' }, { status: 400 });
     }
 
-    // Check if review already exists
     if (booking.review) {
       return NextResponse.json({ error: 'You have already reviewed this session' }, { status: 400 });
     }
 
-    // Create the Review
     const review = await Review.create({
       bookingId: booking._id,
       intervieweeId: user._id,
@@ -60,11 +56,9 @@ export async function POST(req, { params }) {
       reviewText: reviewText,
     });
 
-    // Link review in Booking
     booking.review = review._id;
     await booking.save();
 
-    // Add review reference to Interviewer
     await Interviewer.findByIdAndUpdate(booking.interviewerId, {
       $push: { reviews: review._id }
     });

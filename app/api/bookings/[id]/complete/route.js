@@ -11,38 +11,24 @@ export async function POST(req, { params }) {
     const resolvedParams = await params;
     const bookingId = resolvedParams?.id;
 
-    const { user } = await verifyUser();
+    const { user } = await verifyUser(); 
     await dbConnect();
 
     const body = await req.json();
-    const {
-      summary,
-      technical,
-      communication,
-      problemSolving,
-      recommendation,
-      strengths,
-      improvements,
-      overallRating,
-      score,
-    } = body || {};
+    const { summary, technical, communication, problemSolving, recommendation, strengths, improvements, overallRating, score } = body || {};
 
-    if (!bookingId) {
-      return NextResponse.json({ error: 'Booking ID required' }, { status: 400 });
-    }
+    if (!bookingId) return NextResponse.json({ error: 'Booking ID required' }, { status: 400 });
 
     const booking = await Booking.findById(bookingId);
-    if (!booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
-    }
+    if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
 
     const isFeedbackSubmission = !!(summary || technical || overallRating || score);
     const intervieweeId = booking.intervieweeId;
     const interviewerId = booking.interviewerId;
 
     let feedback = null;
+
     if (isFeedbackSubmission) {
-      // 1. Create/Update Feedback
       feedback = await Feedback.findOneAndUpdate(
         { bookingId: booking._id },
         {
@@ -63,7 +49,6 @@ export async function POST(req, { params }) {
       );
       booking.feedback = feedback._id;
 
-      // 2. Award Credits to Interviewer (only if not already awarded)
       const earnExists = await CreditTransaction.findOne({
         bookingId: booking._id,
         type: TransactionType.BOOKING_EARNING,
@@ -72,7 +57,6 @@ export async function POST(req, { params }) {
       if (!earnExists) {
         const creditsToEarn = booking.creditsCharged || 1;
 
-        // Increment credits & creditBalance for the interviewer
         await Interviewer.findByIdAndUpdate(interviewerId, {
           $inc: { creditBalance: creditsToEarn, credits: creditsToEarn },
         });
@@ -90,7 +74,6 @@ export async function POST(req, { params }) {
       }
     }
 
-    // 3. Mark booking as COMPLETED
     if (booking.status !== BookingStatus.COMPLETED) {
       booking.status = BookingStatus.COMPLETED;
     }
@@ -110,7 +93,8 @@ export async function POST(req, { params }) {
         booking,
       }, { status: 200 });
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.error("POST /api/bookings/[id]/complete error:", err);
     return NextResponse.json({ error: err.message || 'Failed to complete interview session' }, { status: 500 });
   }

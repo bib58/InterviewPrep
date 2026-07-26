@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import { verifyUser } from '@/lib/auth';
-import Interviewer from '@/lib/models/Interviewer';
+import dbConnect from '../../../../lib/db';
+import { verifyUser } from '../../../../lib/auth';
+import Interviewer from '../../../../lib/models/Interviewer';
 
 export async function GET() {
   try {
@@ -9,7 +9,6 @@ export async function GET() {
     await dbConnect();
 
     const now = new Date();
-    // Clean up past availability slots from database
     await Interviewer.updateOne(
       { _id: user._id },
       { $pull: { availableSlots: { endTime: { $lt: now } } } }
@@ -30,7 +29,8 @@ export async function GET() {
     }));
 
     return NextResponse.json({ slots }, { status: 200 });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("GET /api/interviewer/availability error:", error);
     const isAuthError = error.message === 'Token is not present' || error.message === 'Invalid token' || error.message === "User Doesn't Exist";
     return NextResponse.json({ error: error.message || "Failed to fetch availability" }, { status: isAuthError ? 401 : 500 });
@@ -58,7 +58,6 @@ export async function POST(req) {
       return NextResponse.json({ error: "Interviewer not found" }, { status: 404 });
     }
 
-    // Clean up past slots in memory
     const now = new Date();
     interviewer.availableSlots = interviewer.availableSlots.filter(
       (slot) => new Date(slot.endTime) >= now
@@ -87,7 +86,8 @@ export async function POST(req) {
       message: "Availability slot added successfully",
       slots: formattedSlots,
     }, { status: 201 });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("POST /api/interviewer/availability error:", error);
     const isAuthError = error.message === 'Token is not present' || error.message === 'Invalid token' || error.message === "User Doesn't Exist";
     return NextResponse.json({ error: error.message || "Failed to add availability slot" }, { status: isAuthError ? 401 : 500 });
@@ -116,7 +116,6 @@ export async function DELETE(req) {
       return NextResponse.json({ error: "Interviewer not found" }, { status: 404 });
     }
 
-    // Clean up past slots and delete the target slot
     const now = new Date();
     interviewer.availableSlots = interviewer.availableSlots.filter(
       (slot) => slot._id.toString() !== slotId && new Date(slot.endTime) >= now

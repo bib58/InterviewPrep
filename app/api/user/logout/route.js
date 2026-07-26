@@ -26,9 +26,6 @@ export async function POST() {
 
     return response;
   } catch (err) {
-    return NextResponse.json(
-      { error: 'Error logging out: ' + err.message },
-      { status: 503 }
-    );
+    return NextResponse.json({ error: 'Error logging out: ' + err.message }, { status: 503 });
   }
 }

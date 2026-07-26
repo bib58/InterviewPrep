@@ -7,7 +7,6 @@ import "@stream-io/video-react-sdk/dist/css/styles.css";
 import "stream-chat-react/dist/css/index.css";
 import { Loader2 } from "lucide-react";
 import CallUI from "./CallUI";
-import { useSelector } from "react-redux";
 
 export default function CallRoom({ callId, token, apiKey, currentUser, booking, isInterviewer }) {
   const router = useRouter();
@@ -59,7 +58,7 @@ export default function CallRoom({ callId, token, apiKey, currentUser, booking, 
 
   const handleLeave = useCallback(() => {
     if (isInterviewer) {
-      router.push("/dashboard/interviewer");
+      router.push(`/dashboard/interviewer?feedbackBookingId=${booking.id}`);
     } else {
       router.push(`/dashboard/interviewee?reviewBookingId=${booking.id}`);
     }

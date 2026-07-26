@@ -10,18 +10,12 @@ export async function DELETE() {
     await dbConnect();
     await User.findByIdAndDelete(user._id);
 
-    const response = NextResponse.json(
-      { message: 'Profile Deleted Successfully' },
-      { status: 200 }
-    );
+    const response = NextResponse.json({ message: 'Profile Deleted Successfully' }, { status: 200 });
 
     response.cookies.delete('token');
-
     return response;
-  } catch (err) {
-    return NextResponse.json(
-      { error: err.message || 'Internal Server Error' },
-      { status: 500 }
-    );
+  }
+  catch (err) {
+    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
   }
 }

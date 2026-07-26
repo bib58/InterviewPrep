@@ -1,22 +1,19 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '../../../lib/db';
 import Interviewer from '../../../lib/models/Interviewer';
-import Review from '../../../lib/models/Review';
 
 export async function GET() {
   try {
     await dbConnect();
-    
-    // Clean up past availability slots for all interviewers
+
     const now = new Date();
     await Interviewer.updateMany(
       {},
       { $pull: { availableSlots: { endTime: { $lt: now } } } }
     );
 
-    // Fetch interviewers and populate their reviews
     const interviewers = await Interviewer.find({}).populate('reviews').lean();
-    
+
     const enriched = (interviewers || []).map(i => {
       const reviewsList = i.reviews || [];
       const avg = reviewsList.length > 0
@@ -30,11 +27,9 @@ export async function GET() {
     });
 
     return NextResponse.json({ interviewers: enriched }, { status: 200 });
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Error fetching interviewers:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch interviewers" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch interviewers" }, { status: 500 });
   }
 }

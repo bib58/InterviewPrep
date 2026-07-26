@@ -58,9 +58,6 @@ export async function POST(req) {
 
     return response;
   } catch (err) {
-    return NextResponse.json(
-      { error: err.message || 'Login failed' },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: err.message || 'Login failed' }, { status: 401 });
   }
 }

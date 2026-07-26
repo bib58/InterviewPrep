@@ -18,13 +18,18 @@ export const generateInterviewQuestions = async ({ category }) => {
   const { user } = await verifyUser();
   if (!user) throw new Error("Unauthorized");
 
-  if (!category || !CATEGORY_PROMPTS[category])
+  const normalizedCategory = String(category || "")
+    .toUpperCase()
+    .trim()
+    .replace(/[-\s]+/g, "_");
+
+  if (!normalizedCategory || !CATEGORY_PROMPTS[normalizedCategory])
     throw new Error("Invalid category");
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-  const prompt = `You are an expert technical interviewer. Generate 6 interview questions for a ${category} role covering: ${CATEGORY_PROMPTS[category]}. For each question, provide a concise but complete answer (2-4 sentences) that an interviewer can use to evaluate responses. 
+  const prompt = `You are an expert technical interviewer. Generate 6 interview questions for a ${normalizedCategory} role covering: ${CATEGORY_PROMPTS[normalizedCategory]}. For each question, provide a concise but complete answer (2-4 sentences) that an interviewer can use to evaluate responses. 
   Respond ONLY with a valid JSON array. No markdown, no backticks, no explanation. Example format:
   [{"question": "...", "answer": "..."}, {"question": "...", "answer": "..."}]`;
 

@@ -19,7 +19,6 @@ export async function PUT(req) {
 
     await dbConnect();
 
-    // Update the user
     const updatedUser = await User.findByIdAndUpdate(
       authUser._id,
       { firstName },

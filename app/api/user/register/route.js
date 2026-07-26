@@ -7,24 +7,17 @@ import Interviewer from '../../../../lib/models/Interviewer';
 
 import { CreditTransaction, TransactionType } from '../../../../lib/models/CreditTransaction';
 
-export async function POST(req) { 
+export async function POST(req) {
   try {
     const body = await req.json();
-    // Skipping validator for now or extending it, but body is validated on client anyway
-    // validate(body);
-
     const { firstName, emailId, password, phoneNumber, role, title, company, yearsExp, categories, bio, upiId } = body;
 
     await dbConnect();
 
-    // Check if user already exists in either collection
     const existingUser = await User.findOne({ emailId });
     const existingInterviewer = await Interviewer.findOne({ emailId });
     if (existingUser || existingInterviewer) {
-      return NextResponse.json(
-        { error: 'User with this email already exists' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'User with this email already exists' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -58,7 +51,6 @@ export async function POST(req) {
         credits: 5,
       });
 
-      // Record welcome bonus transaction
       await CreditTransaction.create({
         userId: user._id,
         amount: 5,
@@ -86,7 +78,7 @@ export async function POST(req) {
     );
 
     response.cookies.set('token', token, {
-      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+      maxAge: 7 * 24 * 60 * 60,
       httpOnly: true,
       path: '/',
       sameSite: 'lax',
@@ -94,10 +86,8 @@ export async function POST(req) {
     });
 
     return response;
-  } catch (err) {
-    return NextResponse.json(
-      { error: err.message || 'Registration failed' },
-      { status: 400 }
-    );
+  }
+  catch (err) {
+    return NextResponse.json({ error: err.message || 'Registration failed' }, { status: 400 });
   }
 }

@@ -14,14 +14,8 @@ export async function GET() {
       ...(user.role === 'user-interviewer' ? { upiId: user.upiId } : {}),
     };
 
-    return NextResponse.json(
-      { user: reply, message: 'Valid User' },
-      { status: 200 }
-    );
+    return NextResponse.json({ user: reply, message: 'Valid User' }, { status: 200 });
   } catch (err) {
-    return NextResponse.json(
-      { error: err.message },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: err.message }, { status: 401 });
   }
 }

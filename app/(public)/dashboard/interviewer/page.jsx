@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Calendar, Clock, Award, CheckCircle2, AlertCircle, Wallet, Send, TrendingUp, Video, Plus, RefreshCw, CreditCard, Sparkles, ChevronRight, ShieldCheck, Star, X, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export default function InterviewerDashboard() {
+function InterviewerDashboardContent() {
+  const searchParams = useSearchParams();
+  const feedbackBookingId = searchParams?.get("feedbackBookingId");
+
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -113,6 +117,26 @@ export default function InterviewerDashboard() {
   useEffect(() => {
     loadDashboardData();
   }, []);
+
+  useEffect(() => {
+    if (feedbackBookingId && appointments.length > 0) {
+      const appt = appointments.find(
+        (a) => (a.id === feedbackBookingId || a._id === feedbackBookingId) && !a.feedback
+      );
+      if (appt) {
+        setSelectedApptToComplete(appt);
+        setFeedbackForm({
+          summary: `Completed 45-minute mock interview session with ${appt.interviewee?.name || 'candidate'}.`,
+          technical: "Demonstrated solid technical competence and problem solving strategy.",
+          communication: "Clear, structured, and effective communication throughout.",
+          problemSolving: "Methodical approach to algorithm and system challenges.",
+          recommendation: "Strong candidate for upcoming tech role interviews.",
+          overallRating: "GOOD",
+          score: 8,
+        });
+      }
+    }
+  }, [feedbackBookingId, appointments]);
 
   const handleSaveAvailability = async (e) => {
     e.preventDefault();
@@ -594,11 +618,11 @@ export default function InterviewerDashboard() {
                   {completedAppts
                     .slice(0, 5)
                     .map((appt) => {
-                      const isCompleted = appt.status === "COMPLETED";
+                      const feedbackSubmitted = !!appt.feedback;
                       return (
                         <div
                           key={appt._id || appt.id}
-                          className="bg-slate-950/60 border border-slate-800/80 p-4 rounded-2xl space-y-3"
+                          className="bg-slate-950/60 border border-slate-800/80 p-3 rounded-2xl space-y-3 w-[90%] mx-auto"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -616,15 +640,15 @@ export default function InterviewerDashboard() {
                                 </p>
                               </div>
                             </div>
-                            <span className={`text-sm font-bold px-2 py-1 rounded-lg border ${isCompleted
+                            <span className={`text-sm font-bold px-2 py-1 rounded-lg border ${feedbackSubmitted
                               ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
                               : "text-amber-400 bg-amber-500/10 border-amber-500/20"
                               }`}>
-                              {isCompleted ? `+${appt.creditsCharged} Credits` : "PAST / PENDING"}
+                              {feedbackSubmitted ? `+${appt.creditsCharged || 1} Credits` : "FEEDBACK REQUIRED"}
                             </span>
                           </div>
 
-                          {!isCompleted && (
+                          {!feedbackSubmitted && (
                             <button
                               onClick={() => {
                                 setSelectedApptToComplete(appt);
@@ -1088,5 +1112,22 @@ export default function InterviewerDashboard() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function InterviewerDashboard() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+          <div className="flex flex-col items-center gap-3">
+            <RefreshCw className="w-8 h-8 animate-spin text-indigo-500" />
+            <p className="text-slate-400 text-sm">Loading dashboard...</p>
+          </div>
+        </div>
+      }
+    >
+      <InterviewerDashboardContent />
+    </Suspense>
   );
 }

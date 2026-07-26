@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import { verifyUser } from '@/lib/auth';
-import User from '@/lib/models/User';
-import Interviewer from '@/lib/models/Interviewer';
+import dbConnect from '../../../lib/db';
+import { verifyUser } from '../../../lib/auth';
+import User from '../../../lib/models/User';
+import Interviewer from '../../../lib/models/Interviewer';
 import { Booking, BookingStatus } from '../../../lib/models/Booking';
 import { Feedback } from '../../../lib/models/Feedback';
 import { Review } from '../../../lib/models/Review';
@@ -22,14 +22,14 @@ export async function GET() {
         .populate('intervieweeId', 'firstName emailId phoneNumber')
         .sort({ startTime: -1 })
         .lean();
-    } else {
+    }
+    else {
       bookings = await Booking.find({ intervieweeId: user._id })
         .populate('interviewerId', 'firstName emailId title company yearsExp categories bio')
         .sort({ startTime: -1 })
         .lean();
     }
 
-    // Attach Feedback & Review if exist
     const bookingIds = bookings.map(b => b._id);
     const [feedbacks, reviews] = await Promise.all([
       Feedback.find({ bookingId: { $in: bookingIds } }).lean(),
@@ -66,7 +66,8 @@ export async function GET() {
     });
 
     return NextResponse.json({ bookings: enrichedBookings }, { status: 200 });
-  } catch (err) {
+  }
+  catch (err) {
     console.error("GET /api/bookings error:", err);
     const isAuthError = err.message === 'Token is not present' || err.message === 'Invalid token' || err.message === "User Doesn't Exist";
     return NextResponse.json({ error: err.message || 'Failed to fetch bookings' }, { status: isAuthError ? 401 : 500 });
@@ -88,7 +89,6 @@ export async function POST(req) {
     const start = new Date(startTime);
     const end = new Date(endTime);
 
-    // Verify interviewee credits
     const dbUser = await User.findById(user._id);
     if (!dbUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -98,13 +98,11 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Insufficient credits. Please purchase at least 1 credit to book an interview.' }, { status: 400 });
     }
 
-    // Verify interviewer exists
     const interviewer = await Interviewer.findById(interviewerId);
     if (!interviewer) {
       return NextResponse.json({ error: 'Interviewer not found' }, { status: 404 });
     }
 
-    // Check if slot is already booked
     const existingBooking = await Booking.findOne({
       interviewerId,
       startTime: start,
@@ -115,7 +113,6 @@ export async function POST(req) {
       return NextResponse.json({ error: 'This time slot has already been booked by another user.' }, { status: 409 });
     }
 
-    // Create stream call
     let streamCallId;
     try {
       const streamClient = new StreamClient(
@@ -135,23 +132,23 @@ export async function POST(req) {
           role: "user",
         }
       ]);
-  
+
       const generatedCallId = `interview-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       const call = streamClient.video.call("default", generatedCallId);
       await call.getOrCreate(
         {
-          data:{
+          data: {
             created_by_id: dbUser._id,
-            members:[
-              {user_id: dbUser._id, role: "host"},
-              {user_id: interviewerId, role: "host"}
+            members: [
+              { user_id: dbUser._id, role: "host" },
+              { user_id: interviewerId, role: "host" }
             ],
-            settings_override:{
+            settings_override: {
               recording: {
-                mode:"available", quality: "1080p"
+                mode: "available", quality: "1080p"
               },
-              screenSharing:{
-                enabled:true,
+              screenSharing: {
+                enabled: true,
               }
             }
           },
@@ -170,7 +167,7 @@ export async function POST(req) {
       startTime: start,
       endTime: end,
       topic: topic || 'Mock Interview Call',
-      streamCallId:streamCallId,
+      streamCallId: streamCallId,
       status: BookingStatus.SCHEDULED,
       creditsCharged: 1,
     });
@@ -185,35 +182,31 @@ export async function POST(req) {
       bookingId: booking._id,
     });
 
-    // Mark matching availability slot as BOOKED in Interviewer model schema
     if (slotId && interviewer.availableSlots) {
       const targetSlot = interviewer.availableSlots.id(slotId);
       if (targetSlot) {
         targetSlot.isBooked = true;
         await interviewer.save();
-      } else {
+      }
+      else {
         await Interviewer.updateOne(
           { _id: interviewerId, "availableSlots.startTime": start },
           { $set: { "availableSlots.$.isBooked": true } }
         );
       }
-    } else {
+    }
+    else {
       await Interviewer.updateOne(
         { _id: interviewerId, "availableSlots.startTime": start },
         { $set: { "availableSlots.$.isBooked": true } }
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Interview call booked successfully',
-      booking,
-      credits: dbUser.credits,
-    }, { status: 201 });
-  } catch (err) {
+    return NextResponse.json({ success: true, message: 'Interview call booked successfully', booking, credits: dbUser.credits, }, { status: 201 });
+  }
+  catch (err) {
     console.error("POST /api/bookings error:", err);
     const isAuthError = err.message === 'Token is not present' || err.message === 'Invalid token' || err.message === "User Doesn't Exist";
     return NextResponse.json({ error: err.message || 'Failed to create booking' }, { status: isAuthError ? 401 : 500 });
   }
 }
-

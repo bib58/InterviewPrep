@@ -1,13 +1,13 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
-import { verifyUser } from '@/lib/auth';
+import { verifyUser } from '../../../../../lib/auth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const PLAN_PRICES = {
-  1: 10,  // 1 Credit = $10
-  3: 25,  // 3 Credits = $25
-  5: 40   // 5 Credits = $40
+  1: 10,
+  3: 25,
+  5: 40
 };
 
 export async function POST(req) {

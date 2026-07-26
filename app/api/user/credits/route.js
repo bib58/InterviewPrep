@@ -38,7 +38,6 @@ export async function POST(req) {
 
     await dbConnect();
 
-    // Check if user or interviewer
     let updatedUser;
     if (user.role === 'user-interviewer') {
       updatedUser = await Interviewer.findByIdAndUpdate(
@@ -54,7 +53,6 @@ export async function POST(req) {
       );
     }
 
-    // Record credit transaction
     await CreditTransaction.create({
       userId: user._id,
       amount: amount,

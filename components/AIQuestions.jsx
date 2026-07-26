@@ -8,33 +8,22 @@ import { generateInterviewQuestions } from "../actions/Questions";
 import useFetch from "@/hooks/use-fetch";
 
 export default function AIQuestionsPanel({ categories }) {
-  const [selectedCategory, setSelectedCategory] = useState(
-    categories?.[0] ?? null
-  );
-
-  const {
-    data,
-    loading,
-    error,
-    fn: generateFn,
-  } = useFetch(generateInterviewQuestions);
-
+  const [selectedCategory, setSelectedCategory] = useState(categories?.[0] ?? null);
+  const { data, loading, error, fn: generateFn } = useFetch(generateInterviewQuestions);
   const questions = data?.questions ?? [];
 
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
-      {/* Category selector */}
       <div className="flex flex-wrap gap-1.5">
         {categories?.map((cat) => (
           <button
             key={cat}
             type="button"
             onClick={() => setSelectedCategory(cat)}
-            className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-              selectedCategory === cat
+            className={`text-sm px-3 py-1.5 rounded-lg border transition-all ${selectedCategory === cat
                 ? "border-amber-400/40 bg-amber-400/10 text-amber-400"
                 : "border-white/10 text-stone-500 hover:border-white/20 hover:text-stone-400"
-            }`}
+              }`}
           >
             {CATEGORY_LABEL[cat] ?? cat}
           </button>
@@ -43,7 +32,7 @@ export default function AIQuestionsPanel({ categories }) {
 
       <Button
         variant="gold"
-        size="sm"
+        size="md"
         disabled={loading || !selectedCategory}
         onClick={() => generateFn({ category: selectedCategory })}
         className="self-start gap-2"
@@ -62,10 +51,9 @@ export default function AIQuestionsPanel({ categories }) {
       </Button>
 
       {error && (
-        <p className="text-xs text-red-400">{error?.message || error}</p>
+        <p className="text-sm text-red-400">{error?.message || error}</p>
       )}
 
-      {/* Questions list */}
       {questions.length > 0 ? (
         <div className="flex flex-col gap-3 overflow-y-auto flex-1 pr-1">
           {questions.map((q, i) => (
@@ -89,7 +77,7 @@ export default function AIQuestionsPanel({ categories }) {
           <span className="w-10 h-10 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center">
             <Sparkles size={16} className="text-amber-400" />
           </span>
-          <p className="text-xs text-stone-600">
+          <p className="text-sm text-stone-600">
             Select a category and generate role-specific questions for this
             session.
           </p>
