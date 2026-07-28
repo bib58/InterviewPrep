@@ -752,7 +752,6 @@ function IntervieweeDashboardContent() {
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-stone-400 font-medium uppercase tracking-wider">Score</span>
-                  <h4 className="text-2xl font-extrabold text-white">{selectedFeedback.score || 8} / 10</h4>
                 </div>
               </div>
 
