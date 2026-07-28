@@ -18,7 +18,7 @@ export function WithdrawalRequestEmail({
       <body style="font-family: Georgia, serif; padding: 32px 16px; margin: 0; background-color: #ffffff;">
         <div style="max-width: 480px; margin: 0 auto;">
           <p style="font-size: 22px; color: #111827; margin: 0 0 4px; font-weight: bold;">
-            MockMate
+           InterviewPrep
           </p>
           <p style="font-size: 11px; color: #6b7280; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 32px;">
             Withdrawal Request
