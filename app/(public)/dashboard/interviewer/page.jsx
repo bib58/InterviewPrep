@@ -1000,21 +1000,6 @@ function InterviewerDashboardContent() {
                     <option value="POOR">POOR</option>
                   </select>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                    Score (1 to 10)
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={feedbackForm.score}
-                    onChange={(e) => setFeedbackForm({ ...feedbackForm, score: Number(e.target.value) })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500"
-                    required
-                  />
-                </div>
               </div>
 
               <div>
