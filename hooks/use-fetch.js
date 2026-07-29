@@ -11,6 +11,13 @@ export default function useFetch(cb) {
     setError(null);
     try {
       const response = await cb(...args);
+      if (response && response.error) {
+        const err = new Error(response.error);
+        setError(err);
+        toast.error(response.error);
+        setData(undefined);
+        return response;
+      }
       setData(response);
       return response;
     } catch (err) {
