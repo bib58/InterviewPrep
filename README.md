@@ -2,6 +2,8 @@
 
 ## [https://pizza-ochre-chi.vercel.app/](https://pizza-ochre-chi.vercel.app/)
 
+## [Demo Video](https://drive.google.com/file/d/1Q6K9GWjVJDOdCqDS_svgDrMzgdhg8ae3/view?usp=sharing)
+
 InterviewPrep connects candidates with expert interviewers for live practice sessions, featuring real-time video, collaborative chat, and an LLM-question generator in the interviewer dashboard.
 
 ---
