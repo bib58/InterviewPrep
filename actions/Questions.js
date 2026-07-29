@@ -15,18 +15,18 @@ const CATEGORY_PROMPTS = {
 };
 
 export const generateInterviewQuestions = async ({ category }) => {
-  const { user } = await verifyUser();
-  if (!user) throw new Error("Unauthorized");
-
-  const normalizedCategory = String(category || "")
-    .toUpperCase()
-    .trim()
-    .replace(/[-\s]+/g, "_");
-
-  if (!normalizedCategory || !CATEGORY_PROMPTS[normalizedCategory])
-    throw new Error("Invalid category");
-
   try {
+    const { user } = await verifyUser();
+    if (!user) return { error: "Unauthorized" };
+
+    const normalizedCategory = String(category || "")
+      .toUpperCase()
+      .trim()
+      .replace(/[-\s]+/g, "_");
+
+    if (!normalizedCategory || !CATEGORY_PROMPTS[normalizedCategory])
+      return { error: "Invalid category" };
+
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
@@ -41,15 +41,15 @@ export const generateInterviewQuestions = async ({ category }) => {
     try {
       const questions = JSON.parse(clean);
       if (!Array.isArray(questions)) {
-        throw new Error("AI output was not a valid array");
+        return { error: "AI output was not a valid array" };
       }
       return { questions };
     } catch (parseErr) {
       console.error("[generateInterviewQuestions] JSON parse failed, text output:", clean, parseErr);
-      throw new Error("Failed to parse AI generated questions. Please try again.");
+      return { error: "Failed to parse AI generated questions. Please try again." };
     }
   } catch (err) {
     console.error("[generateInterviewQuestions] Gemini API error:", err);
-    throw new Error(err.message || "Failed to generate AI questions. Please verify your Gemini API key.");
+    return { error: err.message || "Failed to generate AI questions. Please verify your Gemini API key." };
   }
 };
